@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>SB Admin 2 - Register</title>
+
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-primary">
+
+<div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-0">
+            <div class="row">
+                <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                <div class="col-lg-7">
+                    <div class="p-5">
+                        <div class="text-center mb-4">
+                            <h1 class="h4 text-gray-900">Create an Account!</h1>
+                        </div>
+
+                        <form method="post" class="user">
+                            {% csrf_token %}
+
+                            <!-- First Name -->
+                            <div class="form-group">
+                                <input type="text" name="first_name" class="form-control form-control-user"
+                                       placeholder="First Name" value="{{ form.first_name.value|default_if_none:'' }}">
+                                {{ form.first_name.errors }}
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="form-group">
+                                <input type="text" name="last_name" class="form-control form-control-user"
+                                       placeholder="Last Name" value="{{ form.last_name.value|default_if_none:'' }}">
+                                {{ form.last_name.errors }}
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group">
+                                <input type="email" name="email" class="form-control form-control-user"
+                                       placeholder="Email" value="{{ form.email.value|default_if_none:'' }}">
+                                {{ form.email.errors }}
+                            </div>
+
+                            <!-- Password -->
+                            <div class="form-group">
+                                <input type="password" name="password1" class="form-control form-control-user"
+                                       placeholder="Password">
+                                {{ form.password1.errors }}
+                            </div>
+
+                            <!-- Retype Password -->
+                            <div class="form-group">
+                                <input type="password" name="password2" class="form-control form-control-user"
+                                       placeholder="Retype Password">
+                                {{ form.password2.errors }}
+                            </div>
+
+                            <!-- Role -->
+                            <div class="form-group">
+                                <select name="role" class="form-control">
+                                    <option value="sales" {% if form.role.value == 'sales' %}selected{% endif %}>Sales</option>
+                                    <option value="support" {% if form.role.value == 'support' %}selected{% endif %}>Support</option>
+                                </select>
+                                {{ form.role.errors }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-user btn-block">Register Account</button>
+                        </form>
+
+                        <hr>
+                        <div class="text-center">
+                            <a class="small" href="{% url 'login' %}">Already have an account? Login!</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+</body>
+</html>
