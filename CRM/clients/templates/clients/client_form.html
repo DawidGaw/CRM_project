@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% if object %}Edit Client{% else %}Create Client{% endif %}</title>
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-primary">
+<div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <h1 class="h4 text-gray-900">{% if object %}Edit Client{% else %}Create Client{% endif %}</h1>
+            </div>
+
+            <form method="post" class="user">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <input type="text" name="company_name" class="form-control form-control-user"
+                           placeholder="Company Name" value="{{ form.company_name.value|default_if_none:'' }}">
+                    {{ form.company_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control form-control-user"
+                           placeholder="Email" value="{{ form.email.value|default_if_none:'' }}">
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="form-group">
+                    <textarea name="address" class="form-control form-control-user" placeholder="Address">{{ form.address.value|default_if_none:'' }}</textarea>
+                    {{ form.address.errors }}
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="tax_number" class="form-control form-control-user"
+                           placeholder="Tax Number" value="{{ form.tax_number.value|default_if_none:'' }}">
+                    {{ form.tax_number.errors }}
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-user btn-block">
+                    {% if object %}Update Client{% else %}Create Client{% endif %}
+                </button>
+            </form>
+
+            <hr>
+            <div class="text-center">
+                <a class="small" href="{% url 'client_list' %}">Back to Client List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+</body>
+</html>

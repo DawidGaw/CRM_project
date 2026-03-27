@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Clients</title>
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-primary">
+<div class="container-fluid mt-4">
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Clients List</h6>
+            <div>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm mr-2">Dashboard</a>
+                {% if request.user.role in 'admin sales' %}
+                    <a href="{% url 'client_create' %}" class="btn btn-success btn-sm">Add Client</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Company</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Tax Number</th>
+                            <th>Owner</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in clients %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ client.company_name }}</td>
+                                <td>{{ client.email }}</td>
+                                <td>{{ client.address }}</td>
+                                <td>{{ client.tax_number }}</td>
+                                <td>{{ client.owner.get_full_name }}</td>
+                                <td>
+                                    {% if request.user.role == 'admin'%}
+                                        <a href="{% url 'client_edit' client.id %}" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{% url 'client_delete' client.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                    {% elif request.user.role == 'sales' and client.owner == request.user %}
+                                        <a href="{% url 'client_edit' client.id %}" class="btn btn-primary btn-sm">Edit</a>
+                                    {% elif request.user.role == 'support' %}
+                                        <a href="{% url 'client_edit' client.id %}" class="btn btn-primary btn-sm">Edit</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No clients found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+</body>
+</html>
