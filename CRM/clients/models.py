@@ -3,8 +3,9 @@ from users.models import User
 
 class Client(models.Model):
     company_name = models.CharField(max_length=200)
-    email = models.EmailField(unique=True)
     address = models.TextField(blank=True)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     tax_number = models.CharField(max_length=20, blank=True)
     owner = models.ForeignKey(
         User,

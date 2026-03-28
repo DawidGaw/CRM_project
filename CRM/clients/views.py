@@ -43,14 +43,15 @@ class ClientUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'admin':
-            return Client.objects.all()
-        elif user.role == 'sales':
-            return Client.objects.filter(owner=user)
-        elif user.role == 'support':
-            return Client.objects.all()
-        return Client.objects.none()
+        qs = super().get_queryset()
 
+        if user.role in ['admin', 'support']:
+            return qs
+
+        if user.role == 'sales':
+            return qs.filter(owner=user)
+
+        return qs.none()
 
 class ClientDeleteView(LoginRequiredMixin, RoleRequiredMixin, DeleteView):
     model = Client

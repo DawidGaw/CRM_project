@@ -1,6 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 
-class RoleRequiredMixin:
+class RoleRequiredMixin: # LoginRequiredMixin
     allowed_roles = []
 
     def dispatch(self, request, *args, **kwargs):

@@ -32,6 +32,7 @@
                             <th>#</th>
                             <th>Company</th>
                             <th>Email</th>
+                            <th>Phone</th>
                             <th>Address</th>
                             <th>Tax Number</th>
                             <th>Owner</th>
@@ -43,8 +44,9 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ client.company_name }}</td>
-                                <td>{{ client.email }}</td>
-                                <td>{{ client.address }}</td>
+                                <td>{{ client.email }}</td> <!-- FIX -->
+                                <td>{{ client.phone_number }}</td>
+                                <td>{{ client.address }}</td> <!-- FIX -->
                                 <td>{{ client.tax_number }}</td>
                                 <td>{{ client.owner.get_full_name }}</td>
                                 <td>
@@ -60,7 +62,7 @@
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="7" class="text-center">No clients found.</td>
+                                <td colspan="8" class="text-center">No clients found.</td> <!-- FIX -->
                             </tr>
                         {% endfor %}
                     </tbody>
