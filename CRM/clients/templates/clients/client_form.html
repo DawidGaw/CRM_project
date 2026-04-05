@@ -24,26 +24,59 @@
                 {% csrf_token %}
 
                 <div class="form-group">
-                    <input type="text" name="company_name" class="form-control form-control-user"
+                    <label for="company_name">Company Name</label>
+                    <input type="text" id="company_name" name="company_name" class="form-control form-control-user"
                            placeholder="Company Name" value="{{ form.company_name.value|default_if_none:'' }}">
                     {{ form.company_name.errors }}
                 </div>
 
                 <div class="form-group">
-                    <input type="email" name="email" class="form-control form-control-user"
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control form-control-user"
                            placeholder="Email" value="{{ form.email.value|default_if_none:'' }}">
                     {{ form.email.errors }}
                 </div>
 
                 <div class="form-group">
-                    <textarea name="address" class="form-control form-control-user" placeholder="Address">{{ form.address.value|default_if_none:'' }}</textarea>
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" id="phone_number" name="phone_number" class="form-control form-control-user"
+                           placeholder="Phone Number" value="{{ form.phone_number.value|default_if_none:'' }}">
+                    {{ form.phone_number.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" class="form-control form-control-user"
+                              placeholder="Address">{{ form.address.value|default_if_none:'' }}</textarea>
                     {{ form.address.errors }}
                 </div>
 
                 <div class="form-group">
-                    <input type="text" name="tax_number" class="form-control form-control-user"
+                    <label for="tax_number">Tax Number</label>
+                    <input type="text" id="tax_number" name="tax_number" class="form-control form-control-user"
                            placeholder="Tax Number" value="{{ form.tax_number.value|default_if_none:'' }}">
                     {{ form.tax_number.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" class="form-control form-control-user">
+                        <option value="lead" {% if form.status.value == 'lead' %}selected{% endif %}>Lead</option>
+                        <option value="active" {% if form.status.value == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if form.status.value == 'inactive' %}selected{% endif %}>Inactive</option>
+                        <option value="lost" {% if form.status.value == 'lost' %}selected{% endif %}>Lost</option>
+                    </select>
+                    {{ form.status.errors }}
+                </div>
+
+                <!-- Tags input -->
+                <div class="form-group">
+                    <label for="tags_input">Tags (separate with commas)</label>
+                    <input type="text" id="tags_input" name="tags_input" class="form-control form-control-user"
+                           placeholder="Enter tags separated by commas"
+                           value="{{ form.initial.tags_input|default_if_none:'' }}">
+                    {{ form.tags_input.errors }}
+                    <small class="form-text text-muted">You can add multiple tags separated by commas. Existing tags will appear here for editing.</small>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-user btn-block">

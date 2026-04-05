@@ -1,8 +1,12 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from .models import Client
+from .models import Client,Tag
+from users.models import User
 from .permissions import RoleRequiredMixin
+from django.db.models import Q
+from .forms import ClientForm
+
 
 class ClientListView(LoginRequiredMixin, ListView):
     model = Client
@@ -11,18 +15,43 @@ class ClientListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == 'admin' or user.is_superuser:
-            return Client.objects.all()
+        if user.role == 'admin':
+            queryset = Client.objects.all()
         elif user.role == 'sales':
-            return Client.objects.filter(owner=user)
+            queryset = Client.objects.filter(owner=user)
         elif user.role == 'support':
-            return Client.objects.all()
-        return Client.objects.none()
+            queryset = Client.objects.all()
+        else:
+            queryset = Client.objects.none()
 
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(company_name__icontains=search) |
+                Q(email__icontains=search)
+            )
+
+        status = self.request.GET.get('status')
+        owner = self.request.GET.get('owner')
+        tags = self.request.GET.getlist('tags')
+        if status:
+            queryset = queryset.filter(status=status)
+        if owner:
+            queryset = queryset.filter(owner__id=owner)
+        if tags:
+            queryset = queryset.filter(tags__id__in=tags).distinct()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()
+        context['tags'] = Tag.objects.all()
+        context['selected_tags'] = [str(t) for t in self.request.GET.getlist('tags')]
+        return context
 
 class ClientCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Client
-    fields = ['company_name', 'email', 'address', 'tax_number']
+    form_class = ClientForm
     template_name = 'clients/client_form.html'
     success_url = reverse_lazy('client_list')
 
@@ -30,12 +59,18 @@ class ClientCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
 
+        tags_str = form.cleaned_data.get('tags_input', '')
+        tags_list = [t.strip() for t in tags_str.split(',') if t.strip()]
+        for tag_name in tags_list:
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            form.instance.tags.add(tag)
+        return response
 
 class ClientUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Client
-    fields = ['company_name', 'email', 'address', 'tax_number']
+    form_class = ClientForm
     template_name = 'clients/client_form.html'
     success_url = reverse_lazy('client_list')
 
@@ -44,14 +79,27 @@ class ClientUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-
         if user.role in ['admin', 'support']:
             return qs
-
         if user.role == 'sales':
             return qs.filter(owner=user)
-
         return qs.none()
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['tags_input'] = ', '.join([tag.name for tag in self.object.tags.all()])
+        return initial
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        tags_str = form.cleaned_data.get('tags_input', '')
+        tags_list = [t.strip() for t in tags_str.split(',') if t.strip()]
+
+        self.object.tags.clear()
+        for tag_name in tags_list:
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            self.object.tags.add(tag)
+        return response
 
 class ClientDeleteView(LoginRequiredMixin, RoleRequiredMixin, DeleteView):
     model = Client

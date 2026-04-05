@@ -1,22 +1,34 @@
-# CRM – Django Project
+## CRM – Django Project
 
-CRM to system do zarządzania klientami, kontaktami i sprzedażą.  
+CRM to system do zarządzania klientami, kontaktami oraz pipeline sprzedaży.
+
+---
 
 ## Cel projektu
 - Zarządzanie klientami i historią kontaktów
 - Automatyczne przypomnienia o follow-up
-- Pipeline sprzedażowy i statystyki
+- Pipeline sprzedażowy
+- Dashboard i statystyki
 
-## Technologie
+---
+
+##  Technologie
 - Django 4.x
 - Django REST Framework
 - PostgreSQL
 - Celery + Redis (zadania w tle)
-- Frontend: Django templates / React opcjonalnie
+- Frontend: Django Templates / React (opcjonalnie)
 
-## Jak uruchomić
-1. Stwórz środowisko wirtualne:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux / macOS
-   venv\Scripts\activate     # Windows
+---
+
+## Funkcjonalności
+- Zarządzanie klientami (CRUD)
+- Historia kontaktów
+- Zadania i przypomnienia
+- Pipeline sprzedaży (deals)
+- Dashboard ze statystykami
+- System ról użytkowników
+
+---
+
+
