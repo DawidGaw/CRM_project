@@ -6,27 +6,60 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('clients', '0004_tag_client_tags'),
+        ("clients", "0004_tag_client_tags"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Contact',
+            name="Contact",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('contact_type', models.CharField(choices=[('call', 'Call'), ('email', 'Email'), ('email', 'Email'), ('meeting', 'Meeting'), ('video', 'Video call'), ('note', 'Note')], max_length=20)),
-                ('contact_date', models.DateField()),
-                ('note', models.TextField(blank=True)),
-                ('next_followup', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('clients', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='contacts', to='clients.client')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "contact_type",
+                    models.CharField(
+                        choices=[
+                            ("call", "Call"),
+                            ("email", "Email"),
+                            ("email", "Email"),
+                            ("meeting", "Meeting"),
+                            ("video", "Video call"),
+                            ("note", "Note"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("contact_date", models.DateField()),
+                ("note", models.TextField(blank=True)),
+                ("next_followup", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "clients",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="contacts",
+                        to="clients.client",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-contact_date', '-created_at'],
+                "ordering": ["-contact_date", "-created_at"],
             },
         ),
     ]

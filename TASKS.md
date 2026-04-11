@@ -3,9 +3,9 @@
 ## 1. Wymagania funkcjonalne
 
 ### 1.1 Zarządzanie użytkownikami
-- System umożliwia rejestrację i logowanie użytkowników. - OK 
-- System wymaga uwierzytelnienia do dostępu do zasobów CRM. - OK 
-- System obsługuje role użytkowników: - OK 
+- System umożliwia rejestrację i logowanie użytkowników. - OK
+- System wymaga uwierzytelnienia do dostępu do zasobów CRM. - OK
+- System obsługuje role użytkowników: - OK
   - `admin`
   - `sales`
   - `support`
@@ -18,8 +18,8 @@
 ---
 
 ### 1.2 Zarządzanie klientami
-- System umożliwia dodanie nowego klienta przez zalogowanego użytkownika. - OK 
-- System wymaga podania: - ok 
+- System umożliwia dodanie nowego klienta przez zalogowanego użytkownika. - OK
+- System wymaga podania: - ok
   - nazwy (osoba lub firma)
   - adresu email (unikalny)
 - System umożliwia edycję danych klienta. - OK
@@ -34,7 +34,7 @@
 - System umożliwia: - DONE
   - wyszukiwanie klientów po nazwie i emailu
   - filtrowanie po statusie, ownerze i tagach
-- System umożliwia przypisywanie wielu tagów do klienta. - TODO 
+- System umożliwia przypisywanie wielu tagów do klienta. - DONE
 
 ---
 

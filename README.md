@@ -30,5 +30,3 @@ CRM to system do zarządzania klientami, kontaktami oraz pipeline sprzedaży.
 - System ról użytkowników
 
 ---
-
-
