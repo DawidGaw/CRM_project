@@ -6,11 +6,11 @@ from django.db import models
 
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ('admin', 'Admin'),
-        ('sales', 'Sales'),
-        ('support', 'Support'),
+        ("admin", "Admin"),
+        ("sales", "Sales"),
+        ("support", "Support"),
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='sales')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="sales")
 
     def __str__(self):
         return f"{self.username} ({self.role})"

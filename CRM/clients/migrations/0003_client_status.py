@@ -4,15 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('clients', '0002_client_phone_number'),
+        ("clients", "0002_client_phone_number"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='client',
-            name='status',
-            field=models.CharField(choices=[('lead', 'Lead'), ('active', 'Active'), ('inactive', 'Inactive'), ('lost', 'Lost')], default='lead', max_length=10),
+            model_name="client",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("lead", "Lead"),
+                    ("active", "Active"),
+                    ("inactive", "Inactive"),
+                    ("lost", "Lost"),
+                ],
+                default="lead",
+                max_length=10,
+            ),
         ),
     ]

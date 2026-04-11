@@ -111,7 +111,11 @@
                         {% for client in clients %}
                             <tr>
                                 <td>{{ forloop.counter }}</td>
-                                <td>{{ client.company_name }}</td>
+                                <td>
+                                    <a href="{% url 'client_detail' client.id %}">
+                                        {{ client.company_name }}
+                                    </a>
+                                </td>
                                 <td>{{ client.email }}</td>
                                 <td>{{ client.phone_number }}</td>
                                 <td>{{ client.address }}</td>
