@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>All Contacts</title>
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-primary">
+
+<div class="container-fluid mt-4">
+
+    <div class="card shadow mb-4">
+
+        <div class="card-header py-3 d-flex justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">All Contacts</h6>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm">Dashboard</a>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Client</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Note</th>
+                            <th>Next Follow-up</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for contact in contacts %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>
+                                <a href="{% url 'client_detail' contact.client.id %}">
+                                    {{ contact.client.company_name }}
+                                </a>
+                            </td>
+                            <td>{{ contact.get_contact_type_display }}</td>
+                            <td>{{ contact.contact_date }}</td>
+                            <td>{{ contact.user.get_full_name }}</td>
+                            <td>{{ contact.note }}</td>
+                            <td>{{ contact.next_followup }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No contacts found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -37,7 +37,6 @@ class Contact(models.Model):
     CONTACT_TYPE_CHOICES = [
         ("call", "Call"),
         ("email", "Email"),
-        ("email", "Email"),
         ("meeting", "Meeting"),
         ("video", "Video call"),
         ("note", "Note"),

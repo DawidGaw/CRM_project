@@ -1,7 +1,6 @@
-from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 from django.urls import reverse_lazy
 from django.views.generic import (
     CreateView,
@@ -10,52 +9,34 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
-from users.models import User
+from django_filters.views import FilterView
 
-from .forms import ClientForm
-from .models import Client, Tag
+from .filters import ClientFilter
+from .forms import ClientForm, ContactForm
+from .models import Client, Contact, Tag
 from .permissions import RoleRequiredMixin
 
 
-class ClientListView(LoginRequiredMixin, ListView):
+class ClientListView(LoginRequiredMixin, FilterView):
     model = Client
     template_name = "clients/client_list.html"
     context_object_name = "clients"
+    filterset_class = ClientFilter
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == "admin":
-            queryset = Client.objects.all()
-        elif user.role == "sales":
-            queryset = Client.objects.filter(owner=user)
-        elif user.role == "support":
-            queryset = Client.objects.all()
-        else:
-            queryset = Client.objects.none()
+        qs = Client.objects.all()
 
-        search = self.request.GET.get("search")
-        if search:
-            queryset = queryset.filter(
-                Q(company_name__icontains=search) | Q(email__icontains=search)
-            )
+        if user.role == "sales":
+            qs = qs.filter(owner=user)
+        elif user.role not in ["admin", "support"]:
+            qs = qs.none()
 
-        status = self.request.GET.get("status")
-        owner = self.request.GET.get("owner")
-        tags = self.request.GET.getlist("tags")
-        if status:
-            queryset = queryset.filter(status=status)
-        if owner:
-            queryset = queryset.filter(owner__id=owner)
-        if tags:
-            queryset = queryset.filter(tags__id__in=tags).distinct()
-        return queryset
+        return qs
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context["users"] = User.objects.all()
-        context["tags"] = Tag.objects.all()
-        context["selected_tags"] = [str(t) for t in self.request.GET.getlist("tags")]
-        return context
+    def filter_queryset(self, queryset):
+        qs = super().filter_queryset(queryset)
+        return qs.distinct()
 
 
 class ClientCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
@@ -130,3 +111,34 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
     template_name = "clients/client_detail.html"
     context_object_name = "client"
+
+
+class ContactCreateView(LoginRequiredMixin, CreateView):
+    model = Contact
+    form_class = ContactForm
+    template_name = "clients/contact_form.html"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.client_id = self.kwargs["client_id"]
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("client_detail", kwargs={"pk": self.kwargs["client_id"]})
+
+
+class ContactListView(LoginRequiredMixin, ListView):
+    model = Contact
+    template_name = "clients/contact_list.html"
+    context_object_name = "contacts"
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.role == "admin" or user.role == "support":
+            return Contact.objects.all()
+
+        elif user.role == "sales":
+            return Contact.objects.filter(user=user)
+
+        return Contact.objects.none()
