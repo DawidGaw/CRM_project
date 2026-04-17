@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 INSTALLED_EXTENSIONS = [
     "users",
     "clients",
+    "tasks"
 ]
 
 INSTALLED_APPS += INSTALLED_EXTENSIONS

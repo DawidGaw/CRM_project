@@ -1,0 +1,170 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-primary">
+
+<div class="container-fluid mt-4">
+
+```
+<div class="card shadow">
+
+    <!-- HEADER -->
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <div>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm mr-2">
+                <i class="fas fa-arrow-left"></i> Dashboard
+            </a>
+        </div>
+
+        <h6 class="text-primary m-0">My Tasks</h6>
+
+        <div>
+            <a href="{% url 'task_add' %}" class="btn btn-success btn-sm">
+                <i class="fas fa-plus"></i> Add Task
+            </a>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <!-- FILTER -->
+        <form method="get" class="mb-3 row">
+
+            <div class="col-md-3">
+                <select name="status" class="form-control">
+                    <option value="">All</option>
+                    <option value="todo" {% if request.GET.status == 'todo' %}selected{% endif %}>To Do</option>
+                    <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="done" {% if request.GET.status == 'done' %}selected{% endif %}>Done</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <select name="due" class="form-control">
+                    <option value="">All</option>
+                    <option value="today" {% if request.GET.due == 'today' %}selected{% endif %}>Today</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-primary btn-block">Filter</button>
+            </div>
+
+        </form>
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+
+                <thead class="thead-light">
+                    <tr>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Due</th>
+                        <th>Reminder</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for task in tasks %}
+                    <tr {% if task.is_overdue %}class="table-danger"{% endif %}>
+
+                        <!-- QUICK DONE -->
+                        <td>
+                            <form method="post" action="{% url 'task_toggle' task.id %}">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-light">
+                                    {% if task.status == 'done' %}
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    {% else %}
+                                        <i class="far fa-circle"></i>
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </td>
+
+                        <!-- TITLE CLICKABLE -->
+                        <td>
+                            <a href="{% url 'task_detail' task.id %}">
+                                {{ task.title }}
+                            </a>
+
+                            {% if task.is_overdue %}
+                                <span class="badge badge-danger ml-2">OVERDUE</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if task.client %}
+                                {{ task.client.company_name }}
+                            {% endif %}
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+                            {% if task.status == 'todo' %}
+                                <span class="badge badge-secondary">To Do</span>
+                            {% elif task.status == 'in_progress' %}
+                                <span class="badge badge-info">In Progress</span>
+                            {% elif task.status == 'done' %}
+                                <span class="badge badge-success">Done</span>
+                            {% else %}
+                                <span class="badge badge-dark">Cancelled</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- PRIORITY -->
+                        <td>
+                            {% if task.priority == 'high' %}
+                                <span class="badge badge-danger">High</span>
+                            {% elif task.priority == 'medium' %}
+                                <span class="badge badge-warning">Medium</span>
+                            {% else %}
+                                <span class="badge badge-secondary">Low</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ task.due_date }}</td>
+                        <td>{{ task.reminder }}</td>
+
+                        <!-- ACTIONS -->
+                        <td>
+                            <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-primary">
+                                Edit
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No tasks found</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+```
+
+</div>
+
+</body>
+</html>

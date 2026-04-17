@@ -6,7 +6,9 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from .forms import RegisterForm
-
+from tasks.models import Task
+from django.utils import timezone
+from datetime import timedelta
 
 class RegisterView(View):
     template_name = "users/register.html"
@@ -49,3 +51,20 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             print("Support access")
 
         return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        now = timezone.now()
+
+        tasks = Task.objects.filter(user=user)
+
+        context['today_tasks'] = tasks.filter(due_date__date=now.date())
+        context['upcoming_tasks'] = tasks.filter(due_date__range=(now, now + timedelta(days=7)))
+
+        context['overdue_count'] = tasks.filter(due_date__lt=now, status__in=['todo', 'in_progress']).count()
+        context['today_count'] = tasks.filter(due_date__date=now.date()).count()
+        context['done_count'] = tasks.filter(status='done').count()
+        context['all_tasks_count'] = tasks.count()
+
+        return context

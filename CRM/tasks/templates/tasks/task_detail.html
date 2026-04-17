@@ -1,0 +1,94 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task Details</title>
+
+```
+<link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+```
+
+</head>
+
+<body class="bg-gradient-primary">
+
+<div class="container mt-5">
+
+```
+<div class="card shadow">
+
+    <!-- HEADER -->
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="m-0 text-primary">Task Details</h5>
+
+        <div>
+            <a href="{% url 'task_list' %}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+
+            <a href="{% url 'task_edit' task.id %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+        </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="card-body">
+
+        <h3 class="mb-3">{{ task.title }}</h3>
+
+        {% if task.is_overdue %}
+            <span class="badge badge-danger mb-3">OVERDUE 🔥</span>
+        {% endif %}
+
+        <hr>
+
+        <p><strong>Status:</strong>
+            {% if task.status == 'todo' %}
+                <span class="badge badge-secondary">To Do</span>
+            {% elif task.status == 'in_progress' %}
+                <span class="badge badge-info">In Progress</span>
+            {% elif task.status == 'done' %}
+                <span class="badge badge-success">Done</span>
+            {% else %}
+                <span class="badge badge-dark">Cancelled</span>
+            {% endif %}
+        </p>
+
+        <p><strong>Priority:</strong>
+            {% if task.priority == 'high' %}
+                <span class="badge badge-danger">High</span>
+            {% elif task.priority == 'medium' %}
+                <span class="badge badge-warning">Medium</span>
+            {% else %}
+                <span class="badge badge-secondary">Low</span>
+            {% endif %}
+        </p>
+
+        <p><strong>Due date:</strong> {{ task.due_date }}</p>
+        <p><strong>Reminder:</strong> {{ task.reminder }}</p>
+
+        {% if task.client %}
+            <p><strong>Client:</strong> {{ task.client.company_name }}</p>
+        {% endif %}
+
+        <hr>
+
+        <p><strong>Description:</strong></p>
+        <p>{{ task.description|default:"No description" }}</p>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+</body>
+</html>
