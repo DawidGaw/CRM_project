@@ -9,223 +9,261 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard</title>
 
-```
-<link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-```
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
+    <style>
+        /* Sidebar toggle transition */
+        #wrapper {
+            display: flex;
+        }
+
+        .sidebar {
+            transition: width 0.25s ease, opacity 0.25s ease;
+            overflow: hidden;
+            width: 224px; /* sb-admin-2 default */
+            min-width: 224px;
+        }
+
+        .sidebar.toggled {
+            width: 0 !important;
+            min-width: 0 !important;
+            opacity: 0;
+        }
+
+        #sidebarToggleBtn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #858796;
+            cursor: pointer;
+            padding: 0 0.75rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        #sidebarToggleBtn:hover {
+            color: #5a5c69;
+        }
+    </style>
 </head>
 
 <body id="page-top">
 
 <div id="wrapper">
 
-```
-<!-- SIDEBAR -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion">
+    <!-- SIDEBAR -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <a class="sidebar-brand d-flex align-items-center justify-content-center"
-       href="{% url 'dashboard' %}">
-        <div class="sidebar-brand-icon">
-            <i class="fas fa-chart-line"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">CRM</div>
-    </a>
-
-    <hr class="sidebar-divider my-0">
-
-    <li class="nav-item active">
-        <a class="nav-link" href="{% url 'dashboard' %}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="{% url 'dashboard' %}">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">CRM</div>
         </a>
-    </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'client_list' %}">
-            <i class="fas fa-fw fa-users"></i>
-            <span>Clients</span>
-        </a>
-    </li>
+        <hr class="sidebar-divider my-0">
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'contact_list' %}">
-            <i class="fas fa-fw fa-phone"></i>
-            <span>Contacts</span>
-        </a>
-    </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'task_list' %}">
-            <i class="fas fa-fw fa-tasks"></i>
-            <span>Tasks</span>
-        </a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'client_list' %}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Clients</span>
+            </a>
+        </li>
 
-    <hr class="sidebar-divider">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact_list' %}">
+                <i class="fas fa-fw fa-phone"></i>
+                <span>Contacts</span>
+            </a>
+        </li>
 
-</ul>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'task_list' %}">
+                <i class="fas fa-fw fa-tasks"></i>
+                <span>Tasks</span>
+            </a>
+        </li>
 
-<!-- CONTENT -->
-<div id="content-wrapper" class="d-flex flex-column">
+        <hr class="sidebar-divider">
 
-    <div id="content">
+    </ul>
 
-        <!-- TOPBAR -->
-        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+    <!-- CONTENT -->
+    <div id="content-wrapper" class="d-flex flex-column" style="flex: 1; min-width: 0;">
 
-            <span class="ml-auto mr-3 text-gray-600 small">
-                {{ request.user.get_full_name }}
-            </span>
+        <div id="content">
 
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button class="btn btn-sm btn-outline-danger">
-                    Logout
+            <!-- TOPBAR -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+
+                <!-- Toggle button -->
+                <button id="sidebarToggleBtn" title="Toggle menu">
+                    <i class="fas fa-bars"></i>
                 </button>
-            </form>
 
-        </nav>
+                <span class="ml-auto mr-3 text-gray-600 small">
+                    {{ request.user.get_full_name }}
+                </span>
 
-        <!-- PAGE CONTENT -->
-        <div class="container-fluid">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-outline-danger">
+                        Logout
+                    </button>
+                </form>
 
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            </div>
+            </nav>
 
-            <!-- 🔢 STATS -->
-            <div class="row">
+            <!-- PAGE CONTENT -->
+            <div class="container-fluid">
 
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-danger shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Overdue Tasks
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ overdue_count }}
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                </div>
+
+                <!-- 🔢 STATS -->
+                <div class="row">
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Overdue Tasks
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ overdue_count }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-warning shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Today Tasks
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ today_count }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-success shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Done Tasks
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ done_count }}
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Today Tasks
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ today_count }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                All Tasks
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ all_tasks_count }}
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Done Tasks
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ done_count }}
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    All Tasks
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ all_tasks_count }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-            </div>
+                <!-- 📋 TASK WIDGETS -->
+                <div class="row">
 
-            <!-- 📋 TASK WIDGETS -->
-            <div class="row">
+                    <!-- TODAY TASKS -->
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="card shadow mb-4">
 
-                <!-- TODAY TASKS -->
-                <div class="col-xl-6 col-lg-6">
-                    <div class="card shadow mb-4">
+                            <div class="card-header py-3 d-flex justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    Today Tasks
+                                </h6>
+                                <a href="{% url 'task_list' %}" class="btn btn-sm btn-primary">
+                                    View All
+                                </a>
+                            </div>
 
-                        <div class="card-header py-3 d-flex justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary">
-                                Today Tasks
-                            </h6>
-                            <a href="{% url 'task_list' %}" class="btn btn-sm btn-primary">
-                                View All
-                            </a>
-                        </div>
+                            <div class="card-body">
 
-                        <div class="card-body">
+                                {% for task in today_tasks %}
+                                    <div class="mb-3 p-2 border rounded {% if task.is_overdue %}bg-danger text-white{% endif %}">
 
-                            {% for task in today_tasks %}
-                                <div class="mb-3 p-2 border rounded {% if task.is_overdue %}bg-danger text-white{% endif %}">
+                                        <div class="d-flex justify-content-between">
+                                            <strong>{{ task.title }}</strong>
 
-                                    <div class="d-flex justify-content-between">
-                                        <strong>{{ task.title }}</strong>
-
-                                        {% if task.is_overdue %}
-                                            <span class="badge badge-light">Overdue</span>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="small">
-                                        {{ task.due_date }}
-                                    </div>
-
-                                    {% if task.client %}
-                                        <div class="small">
-                                            Client: {{ task.client.company_name }}
+                                            {% if task.is_overdue %}
+                                                <span class="badge badge-light">Overdue</span>
+                                            {% endif %}
                                         </div>
-                                    {% endif %}
 
-                                </div>
-                            {% empty %}
-                                <p>No tasks for today</p>
-                            {% endfor %}
+                                        <div class="small">
+                                            {{ task.due_date }}
+                                        </div>
 
-                        </div>
+                                        {% if task.client %}
+                                            <div class="small">
+                                                Client: {{ task.client.company_name }}
+                                            </div>
+                                        {% endif %}
 
-                    </div>
-                </div>
-
-                <!-- NEXT 7 DAYS -->
-                <div class="col-xl-6 col-lg-6">
-                    <div class="card shadow mb-4">
-
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">
-                                Next 7 Days
-                            </h6>
-                        </div>
-
-                        <div class="card-body">
-
-                            {% for task in upcoming_tasks %}
-                                <div class="mb-2">
-                                    <strong>{{ task.title }}</strong>
-                                    <div class="small text-gray-600">
-                                        {{ task.due_date }}
                                     </div>
-                                </div>
-                            {% empty %}
-                                <p>No upcoming tasks</p>
-                            {% endfor %}
+                                {% empty %}
+                                    <p>No tasks for today</p>
+                                {% endfor %}
+
+                            </div>
 
                         </div>
-
                     </div>
+
+                    <!-- NEXT 7 DAYS -->
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="card shadow mb-4">
+
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    Next 7 Days
+                                </h6>
+                            </div>
+
+                            <div class="card-body">
+
+                                {% for task in upcoming_tasks %}
+                                    <div class="mb-2">
+                                        <strong>{{ task.title }}</strong>
+                                        <div class="small text-gray-600">
+                                            {{ task.due_date }}
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <p>No upcoming tasks</p>
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -235,15 +273,17 @@
     </div>
 
 </div>
-```
-
-</div>
 
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
 <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+<script>
+    document.getElementById('sidebarToggleBtn').addEventListener('click', function () {
+        var sidebar = document.getElementById('accordionSidebar');
+        sidebar.classList.toggle('toggled');
+    });
+</script>
 
 </body>
 </html>

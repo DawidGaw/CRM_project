@@ -5,7 +5,7 @@ from users.models import User
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -29,7 +29,7 @@ class Client(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.company_name
 
 
@@ -52,8 +52,8 @@ class Contact(models.Model):
     next_followup = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.client.company_name} {self.contact_type}"
-
     class Meta:
         ordering = ["-contact_date", "-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.client.company_name} {self.contact_type}"

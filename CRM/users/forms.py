@@ -1,3 +1,5 @@
+from typing import Any
+
 from django import forms
 
 from .models import User
@@ -23,7 +25,7 @@ class RegisterForm(forms.ModelForm):
             "role": forms.Select(attrs={"class": "form-control"}),
         }
 
-    def clean(self):
+    def clean(self) -> dict[str, Any]:
         cleaned_data = super().clean()
         p1 = cleaned_data.get("password1")
         p2 = cleaned_data.get("password2")
