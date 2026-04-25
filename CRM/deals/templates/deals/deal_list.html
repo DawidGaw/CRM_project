@@ -1,0 +1,253 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deals Pipeline</title>
+
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+    <style>
+        #wrapper { display: flex; }
+
+        /* SIDEBAR */
+        .sidebar {
+            transition: width 0.25s ease, opacity 0.25s ease;
+            overflow: hidden;
+            width: 224px;
+            min-width: 224px;
+        }
+
+        .sidebar.toggled {
+            width: 0 !important;
+            min-width: 0 !important;
+            opacity: 0;
+        }
+
+        #sidebarToggleBtn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #858796;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        /* PIPELINE */
+        .pipeline-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 15px;
+            padding-bottom: 10px;
+        }
+
+        .pipeline-column {
+            min-width: 260px;
+            max-width: 260px;
+        }
+
+        .pipeline-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .pipeline-container::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        .deal-card:hover {
+            transform: translateY(-2px);
+            transition: 0.2s;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+
+<div id="wrapper">
+
+    <!-- SIDEBAR -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- 🔥 CLEAN BRAND -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="{% url 'dashboard' %}">
+
+            <div class="sidebar-brand-icon mr-2">
+                <i class="fas fa-chart-line"></i>
+            </div>
+
+            <div class="sidebar-brand-text font-weight-bold">
+                CRM Panel
+            </div>
+
+        </a>
+
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i>
+                <span class="ml-2">Dashboard</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'client_list' %}">
+                <i class="fas fa-users"></i>
+                <span class="ml-2">Clients</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact_list' %}">
+                <i class="fas fa-phone"></i>
+                <span class="ml-2">Contacts</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'task_list' %}">
+                <i class="fas fa-tasks"></i>
+                <span class="ml-2">Tasks</span>
+            </a>
+        </li>
+
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'deal_list' %}">
+                <i class="fas fa-dollar-sign"></i>
+                <span class="ml-2">Deals</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- CONTENT -->
+    <div id="content-wrapper" class="d-flex flex-column" style="flex: 1;">
+
+        <div id="content">
+
+            <!-- TOPBAR -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow-sm">
+
+                <button id="sidebarToggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <h4 class="m-0 text-primary">
+                    <i class="fas fa-chart-line mr-2"></i> Sales Pipeline
+                </h4>
+
+                <div class="ml-auto">
+                    <a href="{% url 'deal_add' %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> New Deal
+                    </a>
+                </div>
+
+            </nav>
+
+            <!-- PIPELINE -->
+            <div class="container-fluid">
+
+                <div class="pipeline-container">
+
+                    {% for stage, label in deals.model.STAGE_CHOICES %}
+
+                    <div class="pipeline-column">
+
+                        <div class="card shadow h-100">
+
+                            <div class="card-header py-2 text-center bg-primary text-white">
+                                <strong>{{ label }}</strong>
+                            </div>
+
+                            <div class="card-body p-2" style="min-height: 500px;">
+
+                                {% for deal in deals %}
+                                    {% if deal.stage == stage %}
+
+                                    <div class="card mb-2 shadow-sm deal-card">
+
+                                        <div class="card-body p-2">
+
+                                            <strong>{{ deal.title }}</strong><br>
+
+                                            <small class="text-muted">
+                                                {{ deal.client.company_name }}
+                                            </small>
+
+                                            <div class="mt-2">
+                                                💰 {{ deal.value }}
+                                            </div>
+
+                                            <div class="progress mt-2">
+                                                <div class="progress-bar bg-info"
+                                                     style="width: {{ deal.probability }}%">
+                                                    {{ deal.probability }}%
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-2 text-right">
+
+                                                <a href="{% url 'deal_edit' deal.id %}"
+                                                   class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+
+                                                <a href="{% url 'deal_delete' deal.id %}"
+                                                   class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SCRIPTS -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const btn = document.getElementById('sidebarToggleBtn');
+    const sidebar = document.getElementById('accordionSidebar');
+
+    if (btn && sidebar) {
+        btn.addEventListener('click', function () {
+            sidebar.classList.toggle('toggled');
+        });
+    }
+
+});
+</script>
+
+</body>
+</html>

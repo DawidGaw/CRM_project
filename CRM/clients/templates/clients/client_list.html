@@ -1,179 +1,302 @@
 {% load static %}
-
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Clients</title>
 
-```
-<link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
-<link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-```
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
+    <style>
+        #wrapper { display: flex; }
+
+        .sidebar {
+            transition: width 0.25s ease, opacity 0.25s ease;
+            overflow: hidden;
+            width: 224px;
+            min-width: 224px;
+        }
+
+        .sidebar.toggled {
+            width: 0 !important;
+            min-width: 0 !important;
+            opacity: 0;
+        }
+
+        #sidebarToggleBtn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #858796;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body id="page-top">
 
-<div class="container-fluid mt-4">
+<div id="wrapper">
 
-```
-<div class="card shadow mb-4">
+    <!-- SIDEBAR -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- HEADER -->
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary">Clients List</h6>
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="{% url 'dashboard' %}">
+            <i class="fas fa-chart-line"></i>
+            <div class="sidebar-brand-text mx-3">CRM Panel</div>
+        </a>
 
-        <div>
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm mr-2">Dashboard</a>
+        <hr class="sidebar-divider">
 
-            {% if request.user.role == 'admin' or request.user.role == 'sales' %}
-                <a href="{% url 'client_create' %}" class="btn btn-success btn-sm">Add Client</a>
-            {% endif %}
-        </div>
-    </div>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
 
-    <div class="card-body">
-        <form method="get" class="mb-4">
-            <div class="row">
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'client_list' %}">
+                <i class="fas fa-users"></i> Clients
+            </a>
+        </li>
 
-                <!-- SEARCH -->
-                <div class="col-md-3">
-                    <label for="search">Search</label>
-                    <input type="text" id="search" name="search" class="form-control"
-                           placeholder="Search by name or email"
-                           value="{{ request.GET.search }}">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact_list' %}">
+                <i class="fas fa-phone"></i> Contacts
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'task_list' %}">
+                <i class="fas fa-tasks"></i> Tasks
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'deal_list' %}">
+                <i class="fas fa-dollar-sign"></i> Deals
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- CONTENT -->
+    <div id="content-wrapper" class="d-flex flex-column" style="flex:1; min-width:0;">
+
+        <div id="content">
+
+            <!-- TOPBAR -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+
+                <button id="sidebarToggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <h5 class="ml-3 mb-0 text-primary font-weight-bold">
+                    Clients
+                </h5>
+
+                <div class="ml-auto">
+
+                    {% if request.user.role == 'admin' or request.user.role == 'sales' %}
+                        <a href="{% url 'client_create' %}" class="btn btn-success btn-sm">
+                            <i class="fas fa-plus"></i> Add Client
+                        </a>
+                    {% endif %}
+
                 </div>
 
-                <!-- OWNER -->
-                <div class="col-md-3">
-                    <label for="owner">Owner</label>
-                    <select name="owner" id="owner" class="form-control">
-                        <option value="">All Owners</option>
-                        {% for user in filter.form.owner.field.queryset %}
-                            <option value="{{ user.id }}"
-                                {% if request.GET.owner == user.id|stringformat:"s" %}selected{% endif %}>
-                                {{ user.get_full_name }}
-                            </option>
-                        {% endfor %}
-                    </select>
+            </nav>
+
+            <!-- CONTENT -->
+            <div class="container-fluid">
+
+                <!-- FILTERS -->
+                <div class="card shadow mb-4">
+
+                    <div class="card-header">
+                        <strong>Filters</strong>
+                    </div>
+
+                    <div class="card-body">
+
+                        <form method="get">
+                            <div class="row">
+
+                                <div class="col-md-3">
+                                    <label>Search</label>
+                                    <input type="text" name="search"
+                                           class="form-control"
+                                           placeholder="Name / email"
+                                           value="{{ request.GET.search }}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label>Owner</label>
+                                    <select name="owner" class="form-control">
+                                        <option value="">All</option>
+                                        {% for user in filter.form.owner.field.queryset %}
+                                            <option value="{{ user.id }}"
+                                                {% if request.GET.owner == user.id|stringformat:"s" %}selected{% endif %}>
+                                                {{ user.get_full_name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label>Status</label>
+                                    <select name="status" class="form-control">
+                                        <option value="">All</option>
+                                        <option value="lead" {% if request.GET.status == 'lead' %}selected{% endif %}>Lead</option>
+                                        <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                                        <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                                        <option value="lost" {% if request.GET.status == 'lost' %}selected{% endif %}>Lost</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label>Tags</label>
+                                    <select name="tags" class="form-control" multiple>
+                                        {% for tag in filter.form.tags.field.queryset %}
+                                            <option value="{{ tag.id }}"
+                                                {% if filter.form.tags.value and tag.id in filter.form.tags.value %}selected{% endif %}>
+                                                {{ tag.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-1 d-flex align-items-end">
+                                    <button class="btn btn-primary btn-block">
+                                        Filter
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+
+                    </div>
+
                 </div>
 
-                <!-- STATUS -->
-                <div class="col-md-2">
-                    <label for="status">Status</label>
-                    <select name="status" id="status" class="form-control">
-                        <option value="">All Status</option>
-                        <option value="lead" {% if request.GET.status == 'lead' %}selected{% endif %}>Lead</option>
-                        <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
-                        <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
-                        <option value="lost" {% if request.GET.status == 'lost' %}selected{% endif %}>Lost</option>
-                    </select>
-                </div>
+                <!-- TABLE -->
+                <div class="card shadow">
 
-                <!-- TAGS -->
-                <div class="col-md-4">
-                    <label for="tags">Tags</label>
-                    <select name="tags" id="tags" class="form-control" multiple>
-                        {% for tag in filter.form.tags.field.queryset %}
-                            <option value="{{ tag.id }}"
-                                {% if filter.form.tags.value and tag.id in filter.form.tags.value %}selected{% endif %}>
-                                {{ tag.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
+                    <div class="card-body">
 
-                <!-- FILTER BUTTON -->
-                <div class="col-md-1 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary btn-block">Filter</button>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Company</th>
+                                        <th>Status</th>
+                                        <th>Tags</th>
+                                        <th>Owner</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                {% for client in clients %}
+                                    <tr>
+
+                                        <td>{{ forloop.counter }}</td>
+
+                                        <td>
+                                            <a href="{% url 'client_detail' client.id %}">
+                                                {{ client.company_name }}
+                                            </a>
+                                            <br>
+                                            <small class="text-muted">{{ client.email }}</small>
+                                        </td>
+
+                                        <td>
+                                            {% if client.status == 'active' %}
+                                                <span class="badge badge-success">Active</span>
+                                            {% elif client.status == 'lead' %}
+                                                <span class="badge badge-warning">Lead</span>
+                                            {% elif client.status == 'inactive' %}
+                                                <span class="badge badge-secondary">Inactive</span>
+                                            {% else %}
+                                                <span class="badge badge-dark">Lost</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% for tag in client.tags.all %}
+                                                <span class="badge badge-info">{{ tag.name }}</span>
+                                            {% empty %}
+                                                <span class="text-muted">—</span>
+                                            {% endfor %}
+                                        </td>
+
+                                        <td>{{ client.owner.get_full_name }}</td>
+
+                                        <td>
+
+                                            {% if request.user.role == 'admin' %}
+                                                <a href="{% url 'client_edit' client.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'client_delete' client.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+
+                                            {% elif request.user.role == 'sales' and client.owner == request.user %}
+                                                <a href="{% url 'client_edit' client.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+
+                                            {% elif request.user.role == 'support' %}
+                                                <a href="{% url 'client_edit' client.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            No clients found
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
-        </form>
 
-        <!-- TABLE -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Company</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th>Tax Number</th>
-                        <th>Status</th>
-                        <th>Tags</th>
-                        <th>Owner</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for client in clients %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>
-                                <a href="{% url 'client_detail' client.id %}">
-                                    {{ client.company_name }}
-                                </a>
-                            </td>
-                            <td>{{ client.email }}</td>
-                            <td>{{ client.phone_number }}</td>
-                            <td>{{ client.address }}</td>
-                            <td>{{ client.tax_number }}</td>
-                            <td>{{ client.status }}</td>
-                            <td>
-                                {% for tag in client.tags.all %}
-                                    <span class="badge badge-info">{{ tag.name }}</span>
-                                {% empty %}
-                                    <span class="text-muted">No tags</span>
-                                {% endfor %}
-                            </td>
-                            <td>{{ client.owner.get_full_name }}</td>
-
-                            <td>
-                                {% if request.user.role == 'admin' %}
-                                    <a href="{% url 'client_edit' client.id %}" class="btn btn-primary btn-sm">Edit</a>
-                                    <a href="{% url 'client_delete' client.id %}" class="btn btn-danger btn-sm">Delete</a>
-
-                                {% elif request.user.role == 'sales' and client.owner == request.user %}
-                                    <a href="{% url 'client_edit' client.id %}" class="btn btn-primary btn-sm">Edit</a>
-
-                                {% elif request.user.role == 'support' %}
-                                    <a href="{% url 'client_edit' client.id %}" class="btn btn-primary btn-sm">Edit</a>
-                                {% endif %}
-                            </td>
-                        </tr>
-
-                    {% empty %}
-                        <tr>
-                            <td colspan="9" class="text-center">No clients found.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-
-            </table>
         </div>
 
     </div>
-</div>
-```
 
 </div>
 
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-<script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-
-<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+<script>
+    document.getElementById('sidebarToggleBtn').addEventListener('click', function () {
+        document.getElementById('accordionSidebar').classList.toggle('toggled');
+    });
+</script>
 
 </body>
 </html>

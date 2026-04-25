@@ -2,11 +2,10 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Task Details</title>
+    <title>{% if form.instance.pk %}Edit Deal{% else %}Add Deal{% endif %}</title>
 
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
@@ -79,14 +78,14 @@
             </a>
         </li>
 
-        <li class="nav-item active">
+        <li class="nav-item">
             <a class="nav-link" href="{% url 'task_list' %}">
                 <i class="fas fa-tasks"></i>
                 <span>Tasks</span>
             </a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link" href="{% url 'deal_list' %}">
                 <i class="fas fa-dollar-sign"></i>
                 <span>Deals</span>
@@ -108,93 +107,76 @@
                 </button>
 
                 <h5 class="ml-3 mb-0 text-primary font-weight-bold">
-                    Task Details
+                    {% if form.instance.pk %}Edit Deal{% else %}Add Deal{% endif %}
                 </h5>
 
                 <div class="ml-auto">
-                    <a href="{% url 'task_list' %}" class="btn btn-sm btn-outline-secondary mr-2">
+                    <a href="{% url 'deal_list' %}" class="btn btn-sm btn-outline-secondary">
                         Back
-                    </a>
-
-                    <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-primary">
-                        Edit
                     </a>
                 </div>
 
             </nav>
 
-            <!-- CONTENT -->
+            <!-- FORM -->
             <div class="container-fluid">
 
                 <div class="row justify-content-center">
-                    <div class="col-lg-8">
+                    <div class="col-xl-6 col-lg-8 col-md-10">
 
                         <div class="card shadow">
 
                             <div class="card-body">
 
-                                <h3 class="mb-3 font-weight-bold">
-                                    {{ task.title }}
-                                </h3>
-
-                                {% if task.is_overdue %}
-                                    <span class="badge badge-danger mb-3">
-                                        OVERDUE 🔥
-                                    </span>
+                                {% if form.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.errors }}
+                                    </div>
                                 {% endif %}
 
-                                <hr>
+                                <form method="post">
+                                    {% csrf_token %}
 
-                                <!-- STATUS -->
-                                <p>
-                                    <strong>Status:</strong>
-                                    {% if task.status == 'todo' %}
-                                        <span class="badge badge-secondary">To Do</span>
-                                    {% elif task.status == 'in_progress' %}
-                                        <span class="badge badge-info">In Progress</span>
-                                    {% elif task.status == 'done' %}
-                                        <span class="badge badge-success">Done</span>
-                                    {% else %}
-                                        <span class="badge badge-dark">Cancelled</span>
-                                    {% endif %}
-                                </p>
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        {{ form.title }}
+                                    </div>
 
-                                <!-- PRIORITY -->
-                                <p>
-                                    <strong>Priority:</strong>
-                                    {% if task.priority == 'high' %}
-                                        <span class="badge badge-danger">High</span>
-                                    {% elif task.priority == 'medium' %}
-                                        <span class="badge badge-warning">Medium</span>
-                                    {% else %}
-                                        <span class="badge badge-secondary">Low</span>
-                                    {% endif %}
-                                </p>
+                                    <div class="form-group">
+                                        <label>Client</label>
+                                        {{ form.client }}
+                                    </div>
 
-                                <p>
-                                    <strong>Due date:</strong> {{ task.due_date }}
-                                </p>
+                                    <div class="form-group">
+                                        <label>Value</label>
+                                        {{ form.value }}
+                                    </div>
 
-                                <p>
-                                    <strong>Reminder:</strong> {{ task.reminder }}
-                                </p>
+                                    <div class="form-group">
+                                        <label>Stage</label>
+                                        {{ form.stage }}
+                                    </div>
 
-                                {% if task.client %}
-                                    <p>
-                                        <strong>Client:</strong>
-                                        {{ task.client.company_name }}
-                                    </p>
-                                {% endif %}
+                                    <div class="form-group">
+                                        <label>Probability (%)</label>
+                                        {{ form.probability }}
+                                    </div>
 
-                                <hr>
+                                    <div class="form-group">
+                                        <label>Expected Close Date</label>
+                                        {{ form.expected_close_date }}
+                                    </div>
 
-                                <p class="mb-1">
-                                    <strong>Description:</strong>
-                                </p>
+                                    <div class="form-group">
+                                        <label>Owner</label>
+                                        {{ form.owner }}
+                                    </div>
 
-                                <p class="text-gray-700">
-                                    {{ task.description|default:"No description" }}
-                                </p>
+                                    <button type="submit" class="btn btn-success btn-block">
+                                        Save Deal
+                                    </button>
+
+                                </form>
 
                             </div>
 

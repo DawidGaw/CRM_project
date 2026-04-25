@@ -1,91 +1,203 @@
 {% load static %}
 
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create Task</title>
+    <title>{% if object %}Edit Task{% else %}Create Task{% endif %}</title>
 
-```
-<link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-```
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
+    <style>
+        #wrapper { display: flex; }
+
+        .sidebar {
+            transition: width 0.25s ease, opacity 0.25s ease;
+            overflow: hidden;
+            width: 224px;
+            min-width: 224px;
+        }
+
+        .sidebar.toggled {
+            width: 0 !important;
+            min-width: 0 !important;
+            opacity: 0;
+        }
+
+        #sidebarToggleBtn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #858796;
+            cursor: pointer;
+        }
+
+        #sidebarToggleBtn:hover {
+            color: #5a5c69;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body id="page-top">
 
-<div class="container">
+<div id="wrapper">
 
-```
-<div class="card o-hidden border-0 shadow-lg my-5">
-    <div class="card-body p-5">
+    <!-- SIDEBAR -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <div class="text-center mb-4">
-            <h1 class="h4 text-gray-900">
-                {% if object %}Edit Task{% else %}Create Task{% endif %}
-            </h1>
-        </div>
-
-        <form method="post">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label>Title</label>
-                {{ form.title }}
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="{% url 'dashboard' %}">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-chart-line"></i>
             </div>
+            <div class="sidebar-brand-text mx-3">CRM Panel</div>
+        </a>
 
-            <div class="form-group">
-                <label>Description</label>
-                {{ form.description }}
-            </div>
+        <hr class="sidebar-divider">
 
-            <div class="form-group">
-                <label>Due Date</label>
-                {{ form.due_date }}
-            </div>
-
-            <div class="form-group">
-                <label>Status</label>
-                {{ form.status }}
-            </div>
-
-            <div class="form-group">
-                <label>Priority</label>
-                {{ form.priority }}
-            </div>
-
-            <div class="form-group">
-                <label>Client</label>
-                {{ form.client }}
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">
-                Save Task
-            </button>
-
-        </form>
-
-        <hr>
-
-        <div class="text-center">
-            <a href="{% url 'task_list' %}">
-                Back to Tasks
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
             </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'client_list' %}">
+                <i class="fas fa-users"></i>
+                <span>Clients</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact_list' %}">
+                <i class="fas fa-phone"></i>
+                <span>Contacts</span>
+            </a>
+        </li>
+
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'task_list' %}">
+                <i class="fas fa-tasks"></i>
+                <span>Tasks</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'deal_list' %}">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Deals</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- CONTENT -->
+    <div id="content-wrapper" class="d-flex flex-column" style="flex:1; min-width:0;">
+
+        <div id="content">
+
+            <!-- TOPBAR -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+
+                <button id="sidebarToggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <h5 class="ml-3 mb-0 text-primary font-weight-bold">
+                    {% if object %}Edit Task{% else %}Create Task{% endif %}
+                </h5>
+
+                <div class="ml-auto">
+                    <a href="{% url 'task_list' %}" class="btn btn-sm btn-outline-secondary">
+                        Back
+                    </a>
+                </div>
+
+            </nav>
+
+            <!-- FORM -->
+            <div class="container-fluid">
+
+                <div class="row justify-content-center">
+                    <div class="col-xl-6 col-lg-8 col-md-10">
+
+                        <div class="card shadow">
+
+                            <div class="card-body">
+
+                                {% if form.errors %}
+                                    <div class="alert alert-danger">
+                                        {{ form.errors }}
+                                    </div>
+                                {% endif %}
+
+                                <form method="post">
+                                    {% csrf_token %}
+
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        {{ form.title }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        {{ form.description }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Due Date</label>
+                                        {{ form.due_date }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        {{ form.status }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Priority</label>
+                                        {{ form.priority }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Client</label>
+                                        {{ form.client }}
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        Save Task
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
     </div>
-</div>
-```
 
 </div>
 
+<!-- SCRIPTS -->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+    document.getElementById('sidebarToggleBtn').addEventListener('click', function () {
+        document.getElementById('accordionSidebar').classList.toggle('toggled');
+    });
+</script>
 
 </body>
 </html>

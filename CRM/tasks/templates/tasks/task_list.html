@@ -1,170 +1,288 @@
 {% load static %}
 
 <!DOCTYPE html>
+<html lang="en">
 
-<html>
 <head>
-    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Tasks</title>
+
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+    <style>
+        #wrapper { display: flex; }
+
+        .sidebar {
+            transition: width 0.25s ease, opacity 0.25s ease;
+            overflow: hidden;
+            width: 224px;
+            min-width: 224px;
+        }
+
+        .sidebar.toggled {
+            width: 0 !important;
+            min-width: 0 !important;
+            opacity: 0;
+        }
+
+        #sidebarToggleBtn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #858796;
+            cursor: pointer;
+        }
+
+        #sidebarToggleBtn:hover {
+            color: #5a5c69;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body id="page-top">
 
-<div class="container-fluid mt-4">
+<div id="wrapper">
 
-```
-<div class="card shadow">
+    <!-- SIDEBAR -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- HEADER -->
-    <div class="card-header d-flex justify-content-between align-items-center">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="{% url 'dashboard' %}">
+            <div class="sidebar-brand-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">CRM Panel</div>
+        </a>
 
-        <div>
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm mr-2">
-                <i class="fas fa-arrow-left"></i> Dashboard
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
             </a>
-        </div>
+        </li>
 
-        <h6 class="text-primary m-0">My Tasks</h6>
-
-        <div>
-            <a href="{% url 'task_add' %}" class="btn btn-success btn-sm">
-                <i class="fas fa-plus"></i> Add Task
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'client_list' %}">
+                <i class="fas fa-users"></i>
+                <span>Clients</span>
             </a>
-        </div>
+        </li>
 
-    </div>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact_list' %}">
+                <i class="fas fa-phone"></i>
+                <span>Contacts</span>
+            </a>
+        </li>
 
-    <div class="card-body">
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'task_list' %}">
+                <i class="fas fa-tasks"></i>
+                <span>Tasks</span>
+            </a>
+        </li>
 
-        <!-- FILTER -->
-        <form method="get" class="mb-3 row">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'deal_list' %}">
+                <i class="fas fa-dollar-sign"></i>
+                <span>Deals</span>
+            </a>
+        </li>
 
-            <div class="col-md-3">
-                <select name="status" class="form-control">
-                    <option value="">All</option>
-                    <option value="todo" {% if request.GET.status == 'todo' %}selected{% endif %}>To Do</option>
-                    <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
-                    <option value="done" {% if request.GET.status == 'done' %}selected{% endif %}>Done</option>
-                </select>
-            </div>
+    </ul>
 
-            <div class="col-md-3">
-                <select name="due" class="form-control">
-                    <option value="">All</option>
-                    <option value="today" {% if request.GET.due == 'today' %}selected{% endif %}>Today</option>
-                </select>
-            </div>
+    <!-- CONTENT -->
+    <div id="content-wrapper" class="d-flex flex-column" style="flex:1; min-width:0;">
 
-            <div class="col-md-2">
-                <button class="btn btn-primary btn-block">Filter</button>
-            </div>
+        <div id="content">
 
-        </form>
+            <!-- TOPBAR -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
 
-        <!-- TABLE -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
+                <button id="sidebarToggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
 
-                <thead class="thead-light">
-                    <tr>
-                        <th></th>
-                        <th>Title</th>
-                        <th>Client</th>
-                        <th>Status</th>
-                        <th>Priority</th>
-                        <th>Due</th>
-                        <th>Reminder</th>
-                        <th></th>
-                    </tr>
-                </thead>
+                <h5 class="ml-3 mb-0 text-primary font-weight-bold">
+                    My Tasks
+                </h5>
 
-                <tbody>
+                <div class="ml-auto">
+                    <a href="{% url 'task_add' %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Add Task
+                    </a>
+                </div>
 
-                    {% for task in tasks %}
-                    <tr {% if task.is_overdue %}class="table-danger"{% endif %}>
+            </nav>
 
-                        <!-- QUICK DONE -->
-                        <td>
-                            <form method="post" action="{% url 'task_toggle' task.id %}">
-                                {% csrf_token %}
-                                <button class="btn btn-sm btn-light">
-                                    {% if task.status == 'done' %}
-                                        <i class="fas fa-check-circle text-success"></i>
-                                    {% else %}
-                                        <i class="far fa-circle"></i>
-                                    {% endif %}
+            <!-- CONTENT -->
+            <div class="container-fluid">
+
+                <!-- FILTER -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+
+                        <form method="get" class="row">
+
+                            <div class="col-md-3">
+                                <select name="status" class="form-control">
+                                    <option value="">All</option>
+                                    <option value="todo" {% if request.GET.status == 'todo' %}selected{% endif %}>To Do</option>
+                                    <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="done" {% if request.GET.status == 'done' %}selected{% endif %}>Done</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <select name="due" class="form-control">
+                                    <option value="">All</option>
+                                    <option value="today" {% if request.GET.due == 'today' %}selected{% endif %}>Today</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <button class="btn btn-primary btn-block">
+                                    Filter
                                 </button>
-                            </form>
-                        </td>
+                            </div>
 
-                        <!-- TITLE CLICKABLE -->
-                        <td>
-                            <a href="{% url 'task_detail' task.id %}">
-                                {{ task.title }}
-                            </a>
+                        </form>
 
-                            {% if task.is_overdue %}
-                                <span class="badge badge-danger ml-2">OVERDUE</span>
-                            {% endif %}
-                        </td>
+                    </div>
+                </div>
 
-                        <td>
-                            {% if task.client %}
-                                {{ task.client.company_name }}
-                            {% endif %}
-                        </td>
+                <!-- TABLE -->
+                <div class="card shadow">
+                    <div class="card-body">
 
-                        <!-- STATUS -->
-                        <td>
-                            {% if task.status == 'todo' %}
-                                <span class="badge badge-secondary">To Do</span>
-                            {% elif task.status == 'in_progress' %}
-                                <span class="badge badge-info">In Progress</span>
-                            {% elif task.status == 'done' %}
-                                <span class="badge badge-success">Done</span>
-                            {% else %}
-                                <span class="badge badge-dark">Cancelled</span>
-                            {% endif %}
-                        </td>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
 
-                        <!-- PRIORITY -->
-                        <td>
-                            {% if task.priority == 'high' %}
-                                <span class="badge badge-danger">High</span>
-                            {% elif task.priority == 'medium' %}
-                                <span class="badge badge-warning">Medium</span>
-                            {% else %}
-                                <span class="badge badge-secondary">Low</span>
-                            {% endif %}
-                        </td>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th></th>
+                                        <th>Title</th>
+                                        <th>Client</th>
+                                        <th>Status</th>
+                                        <th>Priority</th>
+                                        <th>Due</th>
+                                        <th>Reminder</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
 
-                        <td>{{ task.due_date }}</td>
-                        <td>{{ task.reminder }}</td>
+                                <tbody>
 
-                        <!-- ACTIONS -->
-                        <td>
-                            <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-primary">
-                                Edit
-                            </a>
-                        </td>
+                                {% for task in tasks %}
+                                    <tr {% if task.is_overdue %}class="table-danger"{% endif %}>
 
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="8" class="text-center">No tasks found</td>
-                    </tr>
-                    {% endfor %}
+                                        <!-- TOGGLE DONE -->
+                                        <td>
+                                            <form method="post" action="{% url 'task_toggle' task.id %}">
+                                                {% csrf_token %}
+                                                <button class="btn btn-sm btn-light">
+                                                    {% if task.status == 'done' %}
+                                                        <i class="fas fa-check-circle text-success"></i>
+                                                    {% else %}
+                                                        <i class="far fa-circle"></i>
+                                                    {% endif %}
+                                                </button>
+                                            </form>
+                                        </td>
 
-                </tbody>
+                                        <!-- TITLE -->
+                                        <td>
+                                            <a href="{% url 'task_detail' task.id %}">
+                                                {{ task.title }}
+                                            </a>
 
-            </table>
+                                            {% if task.is_overdue %}
+                                                <span class="badge badge-danger ml-2">
+                                                    OVERDUE
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if task.client %}
+                                                {{ task.client.company_name }}
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- STATUS -->
+                                        <td>
+                                            {% if task.status == 'todo' %}
+                                                <span class="badge badge-secondary">To Do</span>
+                                            {% elif task.status == 'in_progress' %}
+                                                <span class="badge badge-info">In Progress</span>
+                                            {% elif task.status == 'done' %}
+                                                <span class="badge badge-success">Done</span>
+                                            {% else %}
+                                                <span class="badge badge-dark">Cancelled</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- PRIORITY -->
+                                        <td>
+                                            {% if task.priority == 'high' %}
+                                                <span class="badge badge-danger">High</span>
+                                            {% elif task.priority == 'medium' %}
+                                                <span class="badge badge-warning">Medium</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">Low</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>{{ task.due_date }}</td>
+                                        <td>{{ task.reminder }}</td>
+
+                                        <!-- ACTIONS -->
+                                        <td>
+                                            <a href="{% url 'task_edit' task.id %}"
+                                               class="btn btn-sm btn-primary">
+                                                Edit
+                                            </a>
+                                        </td>
+
+                                    </tr>
+
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            No tasks found
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
     </div>
-</div>
-```
 
 </div>
+
+<!-- SCRIPTS -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+    document.getElementById('sidebarToggleBtn').addEventListener('click', function () {
+        document.getElementById('accordionSidebar').classList.toggle('toggled');
+    });
+</script>
 
 </body>
 </html>

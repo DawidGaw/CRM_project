@@ -6,13 +6,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Task Details</title>
+    <title>Delete Deal</title>
 
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
     <style>
-        #wrapper { display: flex; }
+        #wrapper {
+            display: flex;
+        }
 
         .sidebar {
             transition: width 0.25s ease, opacity 0.25s ease;
@@ -79,14 +81,14 @@
             </a>
         </li>
 
-        <li class="nav-item active">
+        <li class="nav-item">
             <a class="nav-link" href="{% url 'task_list' %}">
                 <i class="fas fa-tasks"></i>
                 <span>Tasks</span>
             </a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link" href="{% url 'deal_list' %}">
                 <i class="fas fa-dollar-sign"></i>
                 <span>Deals</span>
@@ -107,17 +109,13 @@
                     <i class="fas fa-bars"></i>
                 </button>
 
-                <h5 class="ml-3 mb-0 text-primary font-weight-bold">
-                    Task Details
+                <h5 class="ml-3 mb-0 text-danger font-weight-bold">
+                    Delete Deal
                 </h5>
 
                 <div class="ml-auto">
-                    <a href="{% url 'task_list' %}" class="btn btn-sm btn-outline-secondary mr-2">
-                        Back
-                    </a>
-
-                    <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-primary">
-                        Edit
+                    <a href="{% url 'deal_list' %}" class="btn btn-sm btn-outline-secondary">
+                        Back to Deals
                     </a>
                 </div>
 
@@ -127,80 +125,50 @@
             <div class="container-fluid">
 
                 <div class="row justify-content-center">
-                    <div class="col-lg-8">
+
+                    <div class="col-md-6">
 
                         <div class="card shadow">
 
-                            <div class="card-body">
+                            <div class="card-header bg-danger text-white text-center">
+                                <strong>Confirm Deletion</strong>
+                            </div>
 
-                                <h3 class="mb-3 font-weight-bold">
-                                    {{ task.title }}
-                                </h3>
+                            <div class="card-body text-center">
 
-                                {% if task.is_overdue %}
-                                    <span class="badge badge-danger mb-3">
-                                        OVERDUE 🔥
-                                    </span>
-                                {% endif %}
+                                <p class="mb-3">
+                                    Are you sure you want to delete this deal?
+                                </p>
+
+                                <h4 class="text-dark">
+                                    {{ object.title }}
+                                </h4>
+
+                                <p class="text-muted">
+                                    {{ object.client.company_name }}<br>
+                                    💰 {{ object.value }}
+                                </p>
 
                                 <hr>
 
-                                <!-- STATUS -->
-                                <p>
-                                    <strong>Status:</strong>
-                                    {% if task.status == 'todo' %}
-                                        <span class="badge badge-secondary">To Do</span>
-                                    {% elif task.status == 'in_progress' %}
-                                        <span class="badge badge-info">In Progress</span>
-                                    {% elif task.status == 'done' %}
-                                        <span class="badge badge-success">Done</span>
-                                    {% else %}
-                                        <span class="badge badge-dark">Cancelled</span>
-                                    {% endif %}
-                                </p>
+                                <form method="post">
+                                    {% csrf_token %}
 
-                                <!-- PRIORITY -->
-                                <p>
-                                    <strong>Priority:</strong>
-                                    {% if task.priority == 'high' %}
-                                        <span class="badge badge-danger">High</span>
-                                    {% elif task.priority == 'medium' %}
-                                        <span class="badge badge-warning">Medium</span>
-                                    {% else %}
-                                        <span class="badge badge-secondary">Low</span>
-                                    {% endif %}
-                                </p>
+                                    <button class="btn btn-danger">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
 
-                                <p>
-                                    <strong>Due date:</strong> {{ task.due_date }}
-                                </p>
-
-                                <p>
-                                    <strong>Reminder:</strong> {{ task.reminder }}
-                                </p>
-
-                                {% if task.client %}
-                                    <p>
-                                        <strong>Client:</strong>
-                                        {{ task.client.company_name }}
-                                    </p>
-                                {% endif %}
-
-                                <hr>
-
-                                <p class="mb-1">
-                                    <strong>Description:</strong>
-                                </p>
-
-                                <p class="text-gray-700">
-                                    {{ task.description|default:"No description" }}
-                                </p>
+                                    <a href="{% url 'deal_list' %}" class="btn btn-secondary ml-2">
+                                        Cancel
+                                    </a>
+                                </form>
 
                             </div>
 
                         </div>
 
                     </div>
+
                 </div>
 
             </div>

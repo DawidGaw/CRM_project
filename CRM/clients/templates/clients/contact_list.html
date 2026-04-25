@@ -1,68 +1,214 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>All Contacts</title>
+
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+    <style>
+        #wrapper { display: flex; }
+
+        .sidebar {
+            transition: width 0.25s ease, opacity 0.25s ease;
+            overflow: hidden;
+            width: 224px;
+            min-width: 224px;
+        }
+
+        .sidebar.toggled {
+            width: 0 !important;
+            min-width: 0 !important;
+            opacity: 0;
+        }
+
+        #sidebarToggleBtn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #858796;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body id="page-top">
 
-<div class="container-fluid mt-4">
+<div id="wrapper">
 
-    <div class="card shadow mb-4">
+    <!-- SIDEBAR -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <div class="card-header py-3 d-flex justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">All Contacts</h6>
-            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm">Dashboard</a>
-        </div>
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="{% url 'dashboard' %}">
+            <i class="fas fa-chart-line"></i>
+            <div class="sidebar-brand-text mx-3">CRM Panel</div>
+        </a>
 
-        <div class="card-body">
-            <div class="table-responsive">
+        <hr class="sidebar-divider">
 
-                <table class="table table-bordered table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Client</th>
-                            <th>Type</th>
-                            <th>Date</th>
-                            <th>User</th>
-                            <th>Note</th>
-                            <th>Next Follow-up</th>
-                        </tr>
-                    </thead>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
 
-                    <tbody>
-                        {% for contact in contacts %}
-                        <tr>
-                            <td>{{ forloop.counter }}</td>
-                            <td>
-                                <a href="{% url 'client_detail' contact.client.id %}">
-                                    {{ contact.client.company_name }}
-                                </a>
-                            </td>
-                            <td>{{ contact.get_contact_type_display }}</td>
-                            <td>{{ contact.contact_date }}</td>
-                            <td>{{ contact.user.get_full_name }}</td>
-                            <td>{{ contact.note }}</td>
-                            <td>{{ contact.next_followup }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center">No contacts found</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'client_list' %}">
+                <i class="fas fa-users"></i> Clients
+            </a>
+        </li>
 
-                </table>
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'contact_list' %}">
+                <i class="fas fa-phone"></i> Contacts
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'task_list' %}">
+                <i class="fas fa-tasks"></i> Tasks
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'deal_list' %}">
+                <i class="fas fa-dollar-sign"></i> Deals
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- CONTENT -->
+    <div id="content-wrapper" class="d-flex flex-column" style="flex:1; min-width:0;">
+
+        <div id="content">
+
+            <!-- TOPBAR -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+
+                <button id="sidebarToggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <h5 class="ml-3 mb-0 text-primary font-weight-bold">
+                    All Contacts
+                </h5>
+
+                <div class="ml-auto">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Dashboard
+                    </a>
+                </div>
+
+            </nav>
+
+            <!-- TABLE -->
+            <div class="container-fluid">
+
+                <div class="card shadow mb-4">
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered table-hover">
+
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Client</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>User</th>
+                                        <th>Note</th>
+                                        <th>Next Follow-up</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for contact in contacts %}
+                                    <tr>
+
+                                        <td>{{ forloop.counter }}</td>
+
+                                        <td>
+                                            <a href="{% url 'client_detail' contact.client.id %}">
+                                                {{ contact.client.company_name }}
+                                            </a>
+                                        </td>
+
+                                        <td>
+                                            {% if contact.contact_type == 'call' %}
+                                                <span class="badge badge-primary">Call</span>
+                                            {% elif contact.contact_type == 'email' %}
+                                                <span class="badge badge-info">Email</span>
+                                            {% elif contact.contact_type == 'meeting' %}
+                                                <span class="badge badge-success">Meeting</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">
+                                                    {{ contact.get_contact_type_display }}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>{{ contact.contact_date }}</td>
+
+                                        <td>{{ contact.user.get_full_name }}</td>
+
+                                        <td>
+                                            {{ contact.note|truncatechars:50 }}
+                                        </td>
+
+                                        <td>
+                                            {% if contact.next_followup %}
+                                                <span class="text-warning font-weight-bold">
+                                                    {{ contact.next_followup }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">
+                                            No contacts found
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
+
         </div>
+
     </div>
 
 </div>
+
+<!-- SCRIPTS -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script>
+    document.getElementById('sidebarToggleBtn').addEventListener('click', function () {
+        document.getElementById('accordionSidebar').classList.toggle('toggled');
+    });
+</script>
 
 </body>
 </html>

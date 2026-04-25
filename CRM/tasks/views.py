@@ -1,10 +1,11 @@
+from typing import Any
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.utils.functional import _StrPromise
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from .forms import TaskForm
@@ -40,7 +41,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def get_success_url(self) -> _StrPromise:
+    def get_success_url(self) -> Any:
         return reverse_lazy("task_list")
 
 
@@ -52,7 +53,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self) -> QuerySet[Task]:
         return Task.objects.filter(user=self.request.user)
 
-    def get_success_url(self) -> _StrPromise:
+    def get_success_url(self) -> Any:
         return reverse_lazy("task_list")
 
 

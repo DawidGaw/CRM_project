@@ -1,7 +1,6 @@
 {% load static %}
 
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -13,15 +12,12 @@
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
     <style>
-        /* Sidebar toggle transition */
-        #wrapper {
-            display: flex;
-        }
+        #wrapper { display: flex; }
 
         .sidebar {
             transition: width 0.25s ease, opacity 0.25s ease;
             overflow: hidden;
-            width: 224px; /* sb-admin-2 default */
+            width: 224px;
             min-width: 224px;
         }
 
@@ -37,252 +33,266 @@
             font-size: 1.2rem;
             color: #858796;
             cursor: pointer;
-            padding: 0 0.75rem;
-            line-height: 1;
-            transition: color 0.2s;
         }
 
-        #sidebarToggleBtn:hover {
-            color: #5a5c69;
+        /* 🔥 NEW STYLE */
+        .sidebar-brand {
+            height: 70px;
+        }
+
+        .brand-badge {
+            background: white;
+            color: #4e73df;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .stat-icon {
+            font-size: 22px;
+            opacity: 0.3;
+        }
+
+        .quick-btn {
+            border-radius: 10px;
+            font-weight: 600;
         }
     </style>
+
 </head>
 
 <body id="page-top">
 
 <div id="wrapper">
 
-    <!-- SIDEBAR -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<!-- SIDEBAR -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-        <a class="sidebar-brand d-flex align-items-center justify-content-center"
-           href="{% url 'dashboard' %}">
-            <div class="sidebar-brand-icon">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">CRM</div>
+    <!-- 🔥 BETTER BRAND -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center"
+       href="{% url 'dashboard' %}">
+        <div class="brand-badge">
+            <i class="fas fa-chart-line mr-1"></i> Sales CRM
+        </div>
+    </a>
+
+    <hr class="sidebar-divider">
+
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'dashboard' %}">
+            <i class="fas fa-tachometer-alt"></i>
+            <span class="ml-2">Dashboard</span>
         </a>
+    </li>
 
-        <hr class="sidebar-divider my-0">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'client_list' %}">
+            <i class="fas fa-users"></i>
+            <span class="ml-2">Clients</span>
+        </a>
+    </li>
 
-        <li class="nav-item active">
-            <a class="nav-link" href="{% url 'dashboard' %}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'contact_list' %}">
+            <i class="fas fa-phone"></i>
+            <span class="ml-2">Contacts</span>
+        </a>
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'client_list' %}">
-                <i class="fas fa-fw fa-users"></i>
-                <span>Clients</span>
-            </a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'task_list' %}">
+            <i class="fas fa-tasks"></i>
+            <span class="ml-2">Tasks</span>
+        </a>
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'contact_list' %}">
-                <i class="fas fa-fw fa-phone"></i>
-                <span>Contacts</span>
-            </a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'deal_list' %}">
+            <i class="fas fa-dollar-sign"></i>
+            <span class="ml-2">Deals</span>
+        </a>
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'task_list' %}">
-                <i class="fas fa-fw fa-tasks"></i>
-                <span>Tasks</span>
-            </a>
-        </li>
+</ul>
 
-        <hr class="sidebar-divider">
+<!-- CONTENT -->
+<div id="content-wrapper" class="d-flex flex-column">
 
-    </ul>
+<div id="content">
 
-    <!-- CONTENT -->
-    <div id="content-wrapper" class="d-flex flex-column" style="flex: 1; min-width: 0;">
+<!-- TOPBAR -->
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow-sm">
 
-        <div id="content">
+    <button id="sidebarToggleBtn">
+        <i class="fas fa-bars"></i>
+    </button>
 
-            <!-- TOPBAR -->
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow">
+    <div class="ml-auto d-flex align-items-center">
 
-                <!-- Toggle button -->
-                <button id="sidebarToggleBtn" title="Toggle menu">
-                    <i class="fas fa-bars"></i>
-                </button>
+        <span class="mr-3 text-gray-600 small font-weight-bold">
+            {{ request.user.get_full_name }}
+        </span>
 
-                <span class="ml-auto mr-3 text-gray-600 small">
-                    {{ request.user.get_full_name }}
-                </span>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-outline-danger">
+                Logout
+            </button>
+        </form>
 
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button class="btn btn-sm btn-outline-danger">
-                        Logout
-                    </button>
-                </form>
+    </div>
 
-            </nav>
+</nav>
 
-            <!-- PAGE CONTENT -->
-            <div class="container-fluid">
+<!-- CONTENT -->
+<div class="container-fluid">
 
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+    <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+
+    <!-- 🔢 STATS -->
+    <div class="row">
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <div class="text-xs text-danger text-uppercase">Overdue Tasks</div>
+                        <div class="h5 font-weight-bold">{{ overdue_count }}</div>
+                    </div>
+                    <i class="fas fa-fire stat-icon text-danger"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <div class="text-xs text-warning text-uppercase">Today Tasks</div>
+                        <div class="h5 font-weight-bold">{{ today_count }}</div>
+                    </div>
+                    <i class="fas fa-calendar-day stat-icon text-warning"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <div class="text-xs text-success text-uppercase">Won Deals</div>
+                        <div class="h5 font-weight-bold">{{ won_deals_count }}</div>
+                    </div>
+                    <i class="fas fa-check stat-icon text-success"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex justify-content-between">
+                    <div>
+                        <div class="text-xs text-primary text-uppercase">Revenue</div>
+                        <div class="h5 font-weight-bold">{{ total_revenue }} zł</div>
+                    </div>
+                    <i class="fas fa-coins stat-icon text-primary"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 📊 CHART + ACTIONS -->
+    <div class="row">
+
+        <div class="col-xl-8">
+            <div class="card shadow mb-4">
+
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Sales Pipeline
+                    </h6>
                 </div>
 
-                <!-- 🔢 STATS -->
-                <div class="row">
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-danger shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Overdue Tasks
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ overdue_count }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Today Tasks
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ today_count }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Done Tasks
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ done_count }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    All Tasks
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ all_tasks_count }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="card-body">
+                    <canvas id="dealChart"></canvas>
                 </div>
 
-                <!-- 📋 TASK WIDGETS -->
-                <div class="row">
+            </div>
+        </div>
 
-                    <!-- TODAY TASKS -->
-                    <div class="col-xl-6 col-lg-6">
-                        <div class="card shadow mb-4">
+        <div class="col-xl-4">
+            <div class="card shadow mb-4">
 
-                            <div class="card-header py-3 d-flex justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">
-                                    Today Tasks
-                                </h6>
-                                <a href="{% url 'task_list' %}" class="btn btn-sm btn-primary">
-                                    View All
-                                </a>
-                            </div>
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Quick Actions
+                    </h6>
+                </div>
 
-                            <div class="card-body">
+                <div class="card-body">
 
-                                {% for task in today_tasks %}
-                                    <div class="mb-3 p-2 border rounded {% if task.is_overdue %}bg-danger text-white{% endif %}">
+                    <a href="{% url 'deal_add' %}"
+                       class="btn btn-success btn-block quick-btn mb-2">
+                        <i class="fas fa-plus mr-1"></i> New Deal
+                    </a>
 
-                                        <div class="d-flex justify-content-between">
-                                            <strong>{{ task.title }}</strong>
+                    <a href="{% url 'task_add' %}"
+                       class="btn btn-warning btn-block quick-btn mb-2">
+                        <i class="fas fa-tasks mr-1"></i> New Task
+                    </a>
 
-                                            {% if task.is_overdue %}
-                                                <span class="badge badge-light">Overdue</span>
-                                            {% endif %}
-                                        </div>
-
-                                        <div class="small">
-                                            {{ task.due_date }}
-                                        </div>
-
-                                        {% if task.client %}
-                                            <div class="small">
-                                                Client: {{ task.client.company_name }}
-                                            </div>
-                                        {% endif %}
-
-                                    </div>
-                                {% empty %}
-                                    <p>No tasks for today</p>
-                                {% endfor %}
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- NEXT 7 DAYS -->
-                    <div class="col-xl-6 col-lg-6">
-                        <div class="card shadow mb-4">
-
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">
-                                    Next 7 Days
-                                </h6>
-                            </div>
-
-                            <div class="card-body">
-
-                                {% for task in upcoming_tasks %}
-                                    <div class="mb-2">
-                                        <strong>{{ task.title }}</strong>
-                                        <div class="small text-gray-600">
-                                            {{ task.due_date }}
-                                        </div>
-                                    </div>
-                                {% empty %}
-                                    <p>No upcoming tasks</p>
-                                {% endfor %}
-
-                            </div>
-
-                        </div>
-                    </div>
+                    <a href="{% url 'deal_list' %}"
+                       class="btn btn-primary btn-block quick-btn">
+                        <i class="fas fa-chart-bar mr-1"></i> View Pipeline
+                    </a>
 
                 </div>
 
             </div>
-
         </div>
 
     </div>
 
 </div>
 
+</div>
+</div>
+</div>
+
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 
 <script>
-    document.getElementById('sidebarToggleBtn').addEventListener('click', function () {
-        var sidebar = document.getElementById('accordionSidebar');
-        sidebar.classList.toggle('toggled');
-    });
+document.addEventListener('DOMContentLoaded', function () {
+
+    const btn = document.getElementById('sidebarToggleBtn');
+    const sidebar = document.getElementById('accordionSidebar');
+
+    if (btn && sidebar) {
+        btn.addEventListener('click', function () {
+            sidebar.classList.toggle('toggled');
+        });
+    }
+
+    const ctx = document.getElementById('dealChart');
+
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ deal_labels|default:"[]"|safe }},
+                datasets: [{
+                    label: 'Deals',
+                    data: {{ deal_counts|default:"[]"|safe }},
+                }]
+            }
+        });
+    }
+
+});
 </script>
 
 </body>
