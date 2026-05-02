@@ -162,9 +162,10 @@
 
                     </div>
 
-                    <!-- CONTACT HISTORY -->
+                    <!-- RIGHT SIDE -->
                     <div class="col-xl-8">
 
+                        <!-- CONTACT HISTORY -->
                         <div class="card shadow mb-4">
 
                             <div class="card-header">
@@ -213,6 +214,79 @@
 
                         </div>
 
+                        <!-- NOTES -->
+                        <div class="card shadow mb-4">
+
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    Notes
+                                </h6>
+                            </div>
+
+                            <div class="card-body">
+
+                                <!-- ADD NOTE -->
+                                <form method="post" action="{% url 'add_note' client.id %}" class="mb-4">
+                                    {% csrf_token %}
+
+                                    <div class="form-group">
+                                        <textarea name="content"
+                                                  class="form-control"
+                                                  rows="3"
+                                                  placeholder="Write a note..."></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="text"
+                                               name="tags"
+                                               class="form-control"
+                                               placeholder="Tags (comma separated)">
+                                    </div>
+
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus"></i> Add Note
+                                    </button>
+                                </form>
+
+                                <!-- NOTES LIST -->
+                                {% for note in client.notes.all %}
+                                    <div class="card mb-2 shadow-sm">
+
+                                        <div class="card-body p-2">
+
+                                            <div class="d-flex justify-content-between">
+                                                <small class="text-muted">
+                                                    {{ note.user.get_full_name }}
+                                                </small>
+
+                                                <small class="text-muted">
+                                                    {{ note.created_at }}
+                                                </small>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                {{ note.content }}
+                                            </div>
+
+                                            <div class="mt-2">
+                                                {% for tag in note.tags.all %}
+                                                    <span class="badge badge-info mr-1">
+                                                        {{ tag.name }}
+                                                    </span>
+                                                {% endfor %}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                {% empty %}
+                                    <p class="text-muted">No notes yet</p>
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -225,7 +299,6 @@
 
 </div>
 
-<!-- SCRIPTS -->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
@@ -234,6 +307,5 @@
         document.getElementById('accordionSidebar').classList.toggle('toggled');
     });
 </script>
-
 </body>
 </html>

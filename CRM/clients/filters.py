@@ -1,6 +1,6 @@
 import django_filters
 from django import forms
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from users.models import User
 
 from .models import Client, Tag
@@ -35,7 +35,7 @@ class ClientFilter(django_filters.FilterSet):
         model = Client
         fields = ["status", "owner", "tags"]
 
-    def filter_search(self, queryset, name, value):
+    def filter_search(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
         return queryset.filter(
             Q(company_name__icontains=value) | Q(email__icontains=value)
         )

@@ -8,6 +8,7 @@ from .views import (
     ClientUpdateView,
     ContactCreateView,
     ContactListView,
+    add_note,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
         "<int:client_id>/contacts/add/", ContactCreateView.as_view(), name="contact_add"
     ),
     path("contacts/", ContactListView.as_view(), name="contact_list"),
+    path("<int:client_id>/add-note/", add_note, name="add_note"),
 ]
