@@ -12,6 +12,8 @@ from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
+from notifications.models import Notification
+from notifications.services import generate_notifications
 from tasks.models import Task
 
 from .forms import RegisterForm
@@ -70,10 +72,10 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         ).count()
 
         context["today_count"] = tasks.filter(due_date__date=now.date()).count()
-
         context["done_count"] = tasks.filter(status="done").count()
         context["all_tasks_count"] = tasks.count()
 
+        # deals
         deals = Deal.objects.filter(owner=user)
 
         context["won_deals_count"] = deals.filter(stage="won").count()
@@ -94,5 +96,19 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         context["deal_labels"] = labels
         context["deal_counts"] = data
+
+        # notifications
+        last_check = getattr(user, "last_notification_check", None)
+
+        if not last_check or timezone.now() - last_check > timedelta(minutes=10):
+            generate_notifications(user)
+            user.last_notification_check = timezone.now()
+            user.save(update_fields=["last_notification_check"])
+
+        context["notifications"] = Notification.objects.filter(
+            user=user, is_read=False
+        ).order_by("-created_at")[:5]
+
+        context["notifications_count"] = context["notifications"].count()
 
         return context

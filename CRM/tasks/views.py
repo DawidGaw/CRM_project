@@ -29,6 +29,15 @@ class TaskListView(LoginRequiredMixin, ListView):
             today = timezone.now().date()
             qs = qs.filter(due_date__date=today)
 
+        filter_type = self.request.GET.get("filter")
+        now = timezone.now()
+
+        if filter_type == "today":
+            qs = qs.filter(due_date__date=now.date())
+
+        elif filter_type == "overdue":
+            qs = qs.filter(due_date__lt=now, status__in=["todo", "in_progress"])
+
         return qs
 
 
