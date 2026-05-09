@@ -1,12 +1,15 @@
-from collections import Counter
+from calendar import month_abbr
+from collections import Counter, defaultdict
 from datetime import timedelta
 from typing import Any, Dict, cast
 
+from clients.models import Client, Contact
 from deals.models import Deal
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Sum
+from django.db.models.functions import TruncMonth
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -74,6 +77,17 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["today_count"] = tasks.filter(due_date__date=now.date()).count()
         context["done_count"] = tasks.filter(status="done").count()
         context["all_tasks_count"] = tasks.count()
+        context["clients_count"] = Client.objects.filter(owner=user).count()
+
+        threshold = timezone.now().date() - timedelta(days=7)
+
+        context["clients_need_contact"] = (
+            Client.objects.filter(owner=user, contacts__contact_date__lt=threshold)
+            .distinct()
+            .count()
+        )
+
+        context["contacts_count"] = Contact.objects.filter(user=user).count()
 
         # deals
         deals = Deal.objects.filter(owner=user)
@@ -110,5 +124,23 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         ).order_by("-created_at")[:5]
 
         context["notifications_count"] = context["notifications"].count()
+
+        monthly_sales = (
+            deals.filter(stage="won")
+            .annotate(month=TruncMonth("created_at"))
+            .values("month")
+            .annotate(total=Sum("value"))
+            .order_by("month")
+        )
+
+        sales_map = defaultdict(float)
+
+        for sale in monthly_sales:
+            month_number = sale["month"].month
+            sales_map[month_number] = float(sale["total"])
+
+        context["sales_labels"] = [month_abbr[i] for i in range(1, 13)]
+
+        context["sales_data"] = [sales_map[i] for i in range(1, 13)]
 
         return context

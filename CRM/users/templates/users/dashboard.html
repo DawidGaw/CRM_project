@@ -11,7 +11,9 @@
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
     <style>
-        #wrapper { display: flex; }
+        #wrapper {
+            display: flex;
+        }
 
         .sidebar {
             transition: width 0.25s ease, opacity 0.25s ease;
@@ -34,7 +36,9 @@
             cursor: pointer;
         }
 
-        .sidebar-brand { height: 70px; }
+        .sidebar-brand {
+            height: 70px;
+        }
 
         .brand-badge {
             background: white;
@@ -53,6 +57,10 @@
         .quick-btn {
             border-radius: 10px;
             font-weight: 600;
+        }
+
+        #salesChart {
+            max-height: 350px;
         }
     </style>
 
@@ -125,20 +133,24 @@
         <div class="dropdown mr-3">
             <button class="btn btn-light position-relative" data-toggle="dropdown">
                 <i class="fas fa-bell"></i>
+
                 {% if notifications_count > 0 %}
-                    <span class="badge badge-danger position-absolute" style="top:0; right:0;">
+                    <span class="badge badge-danger position-absolute"
+                          style="top:0; right:0;">
                         {{ notifications_count }}
                     </span>
                 {% endif %}
             </button>
 
-            <div class="dropdown-menu dropdown-menu-right shadow" style="width:300px;">
+            <div class="dropdown-menu dropdown-menu-right shadow"
+                 style="width:300px;">
 
                 {% for n in notifications %}
                     <div class="dropdown-item d-flex justify-content-between align-items-center">
                         <span class="small">{{ n.message }}</span>
 
-                        <a href="{% url 'mark_notification' n.id %}" class="text-danger ml-2">
+                        <a href="{% url 'mark_notification' n.id %}"
+                           class="text-danger ml-2">
                             ✖
                         </a>
                     </div>
@@ -175,13 +187,20 @@
 
         <!-- 🔴 OVERDUE -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="{% url 'task_list' %}?filter=overdue" style="text-decoration:none;">
+            <a href="{% url 'task_list' %}?filter=overdue"
+               style="text-decoration:none;">
                 <div class="card border-left-danger shadow h-100 py-2">
                     <div class="card-body d-flex justify-content-between">
                         <div>
-                            <div class="text-xs text-danger text-uppercase">Overdue Tasks</div>
-                            <div class="h5 font-weight-bold text-dark">{{ overdue_count }}</div>
+                            <div class="text-xs text-danger text-uppercase">
+                                Overdue Tasks
+                            </div>
+
+                            <div class="h5 font-weight-bold text-dark">
+                                {{ overdue_count }}
+                            </div>
                         </div>
+
                         <i class="fas fa-fire stat-icon text-danger"></i>
                     </div>
                 </div>
@@ -190,13 +209,20 @@
 
         <!-- 🟡 TODAY -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="{% url 'task_list' %}?filter=today" style="text-decoration:none;">
+            <a href="{% url 'task_list' %}?filter=today"
+               style="text-decoration:none;">
                 <div class="card border-left-warning shadow h-100 py-2">
                     <div class="card-body d-flex justify-content-between">
                         <div>
-                            <div class="text-xs text-warning text-uppercase">Today Tasks</div>
-                            <div class="h5 font-weight-bold text-dark">{{ today_count }}</div>
+                            <div class="text-xs text-warning text-uppercase">
+                                Today Tasks
+                            </div>
+
+                            <div class="h5 font-weight-bold text-dark">
+                                {{ today_count }}
+                            </div>
                         </div>
+
                         <i class="fas fa-calendar-day stat-icon text-warning"></i>
                     </div>
                 </div>
@@ -205,13 +231,20 @@
 
         <!-- 🟢 WON DEALS -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="{% url 'deal_list' %}?stage=won" style="text-decoration:none;">
+            <a href="{% url 'deal_list' %}?stage=won"
+               style="text-decoration:none;">
                 <div class="card border-left-success shadow h-100 py-2">
                     <div class="card-body d-flex justify-content-between">
                         <div>
-                            <div class="text-xs text-success text-uppercase">Won Deals</div>
-                            <div class="h5 font-weight-bold text-dark">{{ won_deals_count }}</div>
+                            <div class="text-xs text-success text-uppercase">
+                                Won Deals
+                            </div>
+
+                            <div class="h5 font-weight-bold text-dark">
+                                {{ won_deals_count }}
+                            </div>
                         </div>
+
                         <i class="fas fa-check stat-icon text-success"></i>
                     </div>
                 </div>
@@ -220,14 +253,87 @@
 
         <!-- 🔵 REVENUE -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <a href="{% url 'deal_list' %}?stage=won" style="text-decoration:none;">
+            <a href="{% url 'deal_list' %}?stage=won"
+               style="text-decoration:none;">
                 <div class="card border-left-primary shadow h-100 py-2">
                     <div class="card-body d-flex justify-content-between">
                         <div>
-                            <div class="text-xs text-primary text-uppercase">Revenue</div>
-                            <div class="h5 font-weight-bold text-dark">{{ total_revenue }} zł</div>
+                            <div class="text-xs text-primary text-uppercase">
+                                Revenue
+                            </div>
+
+                            <div class="h5 font-weight-bold text-dark">
+                                {{ total_revenue }} zł
+                            </div>
                         </div>
+
                         <i class="fas fa-coins stat-icon text-primary"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 👥 CLIENTS -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="{% url 'client_list' %}"
+               style="text-decoration:none;">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body d-flex justify-content-between">
+                        <div>
+                            <div class="text-xs text-info text-uppercase">
+                                Clients
+                            </div>
+
+                            <div class="h5 font-weight-bold text-dark">
+                                {{ clients_count }}
+                            </div>
+                        </div>
+
+                        <i class="fas fa-users stat-icon text-info"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- 📞 NEED CONTACT -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="{% url 'client_list' %}"
+               style="text-decoration:none;">
+                <div class="card border-left-secondary shadow h-100 py-2">
+                    <div class="card-body d-flex justify-content-between">
+                        <div>
+                            <div class="text-xs text-secondary text-uppercase">
+                                Need Contact
+                            </div>
+
+                            <div class="h5 font-weight-bold text-dark">
+                                {{ clients_need_contact }}
+                            </div>
+                        </div>
+
+                        <i class="fas fa-phone stat-icon text-secondary"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- ☎ CONTACTS -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <a href="{% url 'contact_list' %}"
+               style="text-decoration:none;">
+                <div class="card border-left-dark shadow h-100 py-2">
+                    <div class="card-body d-flex justify-content-between">
+                        <div>
+                            <div class="text-xs text-dark text-uppercase">
+                                Contacts
+                            </div>
+
+                            <div class="h5 font-weight-bold text-dark">
+                                {{ contacts_count }}
+                            </div>
+                        </div>
+
+                        <i class="fas fa-address-book stat-icon text-dark"></i>
                     </div>
                 </div>
             </a>
@@ -235,38 +341,53 @@
 
     </div>
 
-    <!-- 📊 CHART + ACTIONS -->
+    <!-- 📈 SALES + ACTIONS -->
     <div class="row">
 
         <div class="col-xl-8">
             <div class="card shadow mb-4">
+
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Sales Pipeline</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Sales
+                    </h6>
                 </div>
+
                 <div class="card-body">
-                    <canvas id="dealChart"></canvas>
+                    <canvas id="salesChart"></canvas>
                 </div>
+
             </div>
         </div>
 
         <div class="col-xl-4">
             <div class="card shadow mb-4">
+
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Quick Actions
+                    </h6>
                 </div>
+
                 <div class="card-body">
-                    <a href="{% url 'deal_add' %}" class="btn btn-success btn-block quick-btn mb-2">
+
+                    <a href="{% url 'deal_add' %}"
+                       class="btn btn-success btn-block quick-btn mb-2">
                         <i class="fas fa-plus mr-1"></i> New Deal
                     </a>
 
-                    <a href="{% url 'task_add' %}" class="btn btn-warning btn-block quick-btn mb-2">
+                    <a href="{% url 'task_add' %}"
+                       class="btn btn-warning btn-block quick-btn mb-2">
                         <i class="fas fa-tasks mr-1"></i> New Task
                     </a>
 
-                    <a href="{% url 'deal_list' %}" class="btn btn-primary btn-block quick-btn">
+                    <a href="{% url 'deal_list' %}"
+                       class="btn btn-primary btn-block quick-btn">
                         <i class="fas fa-chart-bar mr-1"></i> View Pipeline
                     </a>
+
                 </div>
+
             </div>
         </div>
 
@@ -294,17 +415,49 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const ctx = document.getElementById('dealChart');
+    const ctx = document.getElementById('salesChart');
 
     if (ctx) {
         new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
+
             data: {
-                labels: {{ deal_labels|default:"[]"|safe }},
+                labels: {{ sales_labels|safe }},
                 datasets: [{
-                    label: 'Deals',
-                    data: {{ deal_counts|default:"[]"|safe }},
+                    label: 'Sales Value',
+                    data: {{ sales_data|safe }},
+
+                    borderWidth: 4,
+                    tension: 0.45,
+                    fill: true,
+                    cubicInterpolationMode: 'monotone',
+
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
                 }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 0
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
     }
