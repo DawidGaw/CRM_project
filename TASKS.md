@@ -38,7 +38,7 @@
 
 ---
 
-### 1.3 Historia kontaktów
+### 1.3 Historia kontaktów - [DONE]
 - System umożliwia rejestrowanie kontaktów z klientem.
 - Każdy kontakt zawiera:
   - typ: `Call`, `Email`, `Meeting`, `Video Call`, `Note`
@@ -50,7 +50,7 @@
 
 ---
 
-### 1.4 Zadania
+### 1.4 Zadania [DONE}]
 - System umożliwia tworzenie zadań przypisanych do użytkownika.
 - Zadanie zawiera:
   - tytuł (wymagany)
@@ -65,7 +65,7 @@
 
 ---
 
-### 1.5 Deals / Pipeline sprzedaży
+### 1.5 Deals / Pipeline sprzedaży [DONE]
 - System umożliwia tworzenie transakcji (deal) powiązanych z klientem.
 - Deal zawiera:
   - tytuł
@@ -81,7 +81,7 @@
 
 ---
 
-### 1.6 Powiadomienia i przypomnienia
+### 1.6 Powiadomienia i przypomnienia[DONE]
 - System generuje powiadomienia gdy:
   - brak kontaktu z klientem przez określoną liczbę dni
   - zbliża się termin `next_followup`
@@ -93,7 +93,7 @@
 
 ---
 
-### 1.7 Dashboard
+### 1.7 Dashboard [DONE]
 - System wyświetla dashboard zawierający:
   - liczbę klientów
   - klientów wymagających kontaktu
@@ -106,7 +106,7 @@
 
 ---
 
-### 1.8 Notatki i tagi
+### 1.8 Notatki i tagi [DONE]
 - System umożliwia dodawanie notatek do klienta.
 - System umożliwia przypisywanie wielu tagów do klientów.
 - System umożliwia filtrowanie klientów po tagach.
@@ -115,7 +115,7 @@
 
 ## 2. Wymagania niefunkcjonalne
 
-### 2.1 Bezpieczeństwo
+### 2.1 Bezpieczeństwo [DONE]
 - Hasła użytkowników muszą być przechowywane w formie haszowanej.
 - System musi stosować mechanizmy ochrony przed:
   - CSRF

@@ -14,3 +14,6 @@ ignore_errors = true
 
 [tool.bandit]
 exclude_dirs = ["tests"]
+
+[mypy.plugins.django-stubs]
+django_settings_module = "CRM.core.settings"

@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:18.4
+    container_name: crm_db
+
+    environment:
+      POSTGRES_DB: crm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql
+  web:
+    build: .
+    container_name: crm_web
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8000"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
