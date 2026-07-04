@@ -16,7 +16,6 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 from notifications.models import Notification
-from notifications.services import generate_notifications
 from tasks.models import Task
 
 from .forms import RegisterForm
@@ -112,12 +111,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context["deal_counts"] = data
 
         # notifications
-        last_check = getattr(user, "last_notification_check", None)
-
-        if not last_check or timezone.now() - last_check > timedelta(minutes=10):
-            generate_notifications(user)
-            user.last_notification_check = timezone.now()
-            user.save(update_fields=["last_notification_check"])
 
         context["notifications"] = Notification.objects.filter(
             user=user, is_read=False

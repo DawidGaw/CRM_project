@@ -7,17 +7,72 @@ services:
       POSTGRES_DB: crm
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+
     volumes:
       - postgres_data:/var/lib/postgresql
+
   web:
     build: .
     container_name: crm_web
+
     volumes:
       - .:/app
+
     ports:
       - "8080:8000"
+
     depends_on:
       - db
+      - redis
+
+  celery:
+    build: .
+    container_name: crm_celery
+
+    working_dir: /app/CRM
+    command: celery -A core worker -l info
+
+    volumes:
+      - .:/app
+
+    depends_on:
+      - db
+      - redis
+
+  celery-beat:
+    build: .
+    container_name: crm_celery_beat
+
+    working_dir: /app/CRM
+    command: celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+
+    volumes:
+      - .:/app
+
+    depends_on:
+      - db
+      - redis
+
+  flower:
+    build: .
+    container_name: crm_flower
+
+    working_dir: /app/CRM
+    command: celery -A core flower broker=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+
+    volumes:
+      - .:/app
+
+    depends_on:
+      - redis
+      - celery
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: crm_redis
 
 volumes:
   postgres_data:

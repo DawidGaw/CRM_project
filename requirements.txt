@@ -42,3 +42,5 @@ tzlocal==5.3.1
 vine==5.1.0
 virtualenv==21.2.1
 wcwidth==0.6.0
+django-celery-beat==2.9.0
+flower==2.0.1

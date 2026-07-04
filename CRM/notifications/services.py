@@ -21,23 +21,31 @@ def generate_notifications(user: User) -> None:
             days = (now.date() - last_contact.contact_date).days
 
             if days >= 30:
-                Notification.objects.get_or_create(
+                notification, created = Notification.objects.get_or_create(
                     key=f"no_contact_{client.id}",
                     defaults={
                         "user": user,
                         "client": client,
                         "type": "no_contact",
-                        "message": f"No contact with {client.company_name} for {days} days",
+                        "message": (
+                            f"No contact with {client.company_name} for {days} days"
+                        ),
                     },
                 )
 
-    # followup
+                if created:
+                    from .tasks import send_notification_email
+
+                    send_notification_email.delay(notification.id)
+
+    # follow-up
     upcoming = Contact.objects.filter(
-        client__owner=user, next_followup__range=(now, now + timedelta(days=3))
-    )
+        client__owner=user,
+        next_followup__range=(now, now + timedelta(days=3)),
+    ).select_related("client")
 
     for contact in upcoming:
-        Notification.objects.get_or_create(
+        notification, created = Notification.objects.get_or_create(
             key=f"followup_{contact.id}",
             defaults={
                 "user": user,
@@ -47,6 +55,11 @@ def generate_notifications(user: User) -> None:
             },
         )
 
+        if created:
+            from .tasks import send_notification_email
+
+            send_notification_email.delay(notification.id)
+
     # overdue tasks
     tasks = Task.objects.filter(
         user=user,
@@ -55,7 +68,7 @@ def generate_notifications(user: User) -> None:
     )
 
     for task in tasks:
-        Notification.objects.get_or_create(
+        notification, created = Notification.objects.get_or_create(
             key=f"task_{task.id}",
             defaults={
                 "user": user,
@@ -63,3 +76,8 @@ def generate_notifications(user: User) -> None:
                 "message": f"Task '{task.title}' is overdue",
             },
         )
+
+        if created:
+            from .tasks import send_notification_email
+
+            send_notification_email.delay(notification.id)

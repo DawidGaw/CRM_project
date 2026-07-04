@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "django_filters",
+    "django_celery_beat",
 ]
 
 INSTALLED_EXTENSIONS = ["users", "clients", "tasks", "deals", "notifications"]
@@ -132,3 +133,15 @@ AUTH_USER_MODEL = "users.User"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
 LOGIN_URL = "login"
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+DEFAULT_FROM_EMAIL = "crm@example.com"
+
+DAILY_REPORT_RECIPIENTS = ["dawid@example.com"]

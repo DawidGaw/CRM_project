@@ -12,7 +12,6 @@ class User(AbstractUser):
         ("support", "Support"),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default="sales")
-    last_notification_check = models.DateTimeField(null=True, blank=True)
 
     def __str__(self) -> str:
         return f"{self.username} ({self.role})"
