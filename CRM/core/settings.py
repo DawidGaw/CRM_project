@@ -35,7 +35,7 @@ ALLOWED_HOSTS = env.list(
         "localhost",
         "127.0.0.1",
         "my-django-env.eba-iar7iimb.eu-central-1.elasticbeanstalk.com",
-        "172.31.25.75",
+        "172.31.40.181",
     ],
 )
 
