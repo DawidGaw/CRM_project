@@ -33,16 +33,16 @@ The project demonstrates backend development using **PostgreSQL**, **Redis**, **
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Language | Python 3.13 |
-| Framework | Django |
-| Database | PostgreSQL |
-| Background Tasks | Celery |
-| Message Broker | Redis |
-| Containerization | Docker & Docker Compose |
-| Cloud | AWS Elastic Beanstalk |
-| Frontend | Bootstrap 5 |
+| Category | Technology                       |
+|----------|----------------------------------|
+| Language | Python 3.13                      |
+| Framework | Django                           |
+| Database | PostgreSQL                       |
+| Background Tasks | Celery / Celery Beat             |
+| Message Broker | Redis                            |
+| Containerization | Docker & Docker Compose          |
+| Cloud | AWS Elastic Beanstalk / S3 / RDS |
+| Frontend | Bootstrap 5                      |
 
 ---
 
