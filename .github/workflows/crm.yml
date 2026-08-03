@@ -43,6 +43,7 @@ jobs:
 
     - name: Run tests with coverage
       run: |
+        cd CRM
         coverage run --source='.' manage.py test
         coverage xml
 
@@ -50,5 +51,5 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.xml
+        files: ./CRM/coverage.xml
         fail_ci_if_error: true
