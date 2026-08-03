@@ -69,6 +69,7 @@ jobs:
         DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         DB_PORT: ${{ env.POSTGRES_PORT }}
         DB_HOST: ${{ env.POSTGRES_HOST }}
+        ENVIRONMENT: "CI"
 
 
     - name: Upload coverage to Codecov
