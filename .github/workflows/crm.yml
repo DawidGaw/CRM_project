@@ -12,6 +12,22 @@ env:
 jobs:
   lint_test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          -- health-cmd pg_isready
+          -- health-interval 10s
+          -- health-timeout 5s
+          -- health-retries 5
+
+
     name: Code Quality & Lint
 
     steps:
@@ -46,9 +62,17 @@ jobs:
         cd CRM
         coverage run --source='.' manage.py test
         coverage xml
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        POSTGRES_USER: ${{ env.POSTGRES_USER }}
+        POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
+        POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./CRM/coverage.xml
