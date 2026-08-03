@@ -64,11 +64,11 @@ jobs:
         coverage xml
       env:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        POSTGRES_USER: ${{ env.POSTGRES_USER }}
-        POSTGRES_DB: ${{ env.POSTGRES_DB }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        POSTGRES_PORT: ${{ env.POSTGRES_PORT }}
-        POSTGRES_HOST: ${{ env.POSTGRES_HOST }}
+        DB_USER: ${{ env.POSTGRES_USER }}
+        DB_NAME: ${{ env.POSTGRES_DB }}
+        DB_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        DB_PORT: ${{ env.POSTGRES_PORT }}
+        DB_HOST: ${{ env.POSTGRES_HOST }}
 
 
     - name: Upload coverage to Codecov
