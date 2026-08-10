@@ -16,7 +16,7 @@ class ClientFactory(DjangoModelFactory):
     company_name = factory.Sequence(lambda n: f"Company {n}")
     address = factory.Faker("address")
     email = factory.Sequence(lambda n: f"client{n}@example.com")
-    phone_number = factory.Faker("phone_number")
+    phone_number = factory.Sequence(lambda n: f"+48123456{n:04d}")
     tax_number = factory.Sequence(lambda n: f"TAX{n:06d}")
     owner = factory.SubFactory(UserFactory)
     status = "lead"
