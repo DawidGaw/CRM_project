@@ -6,9 +6,8 @@ from users.models import User, UserSettings
 class UserFactory(DjangoModelFactory):
     class Meta:
         model = User
-        django_get_or_create = ("username",)
+        django_get_or_create = ("email",)
 
-    username = factory.Sequence(lambda n: f"user{n}")
     email = factory.Sequence(lambda n: f"user{n}@example.com")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
